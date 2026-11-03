@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IcaMeal — Perencanaan Makan Berbasis Anggaran untuk Mahasiswa dan Anak Kos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #F8F9FA;
+  --surface: #FFFFFF;
+  --border: #DDE2E5;
+  --border-strong: #0F172A;
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #64748B;
+  
+  --primary: #E65100;
+  --primary-hover: #BF360C;
+  --primary-light: #FFF3E0;
+  
+  --dark-panel: #0B132B;
+  --dark-panel-border: #1C2541;
+  
+  --success-bg: #E8F5E9;
+  --success-text: #1B5E20;
+  --success-border: #81C784;
+  
+  --danger-bg: #FFEBEE;
+  --danger-text: #B71C1C;
+  --danger-border: #E57373;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Navigation ── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border-strong);
+  padding: 0 24px;
+}
+
+.nav-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-main);
+}
+
+.brand-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.brand-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  letter-spacing: 0.04em;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  background-color: var(--bg);
+}
+
+.nav-cta {
+  background: var(--border-strong);
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s;
+}
+
+.nav-cta:hover {
+  background: #1E293B;
+}
+
+.mobile-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* ── Layout & Typography ── */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.section-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 720px;
+}
+
+/* ── Hero / Overview ── */
+.hero-section {
+  background: var(--dark-panel);
+  color: #FFFFFF;
+  padding: 64px 0 56px;
+  border-bottom: 3px solid var(--border-strong);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-heading {
+  font-size: 2.3rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.hero-summary {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #CBD5E1;
+  margin-bottom: 24px;
+  max-width: 580px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-footnote {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-footnote strong {
+  color: #F8FAFC;
+}
+
+.hero-box {
+  background: #111D3E;
+  border: 1px solid #1E293B;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.hero-box-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+  margin-bottom: 16px;
+}
+
+.hero-metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.metric-card {
+  background: #0B132B;
+  border: 1px solid #1C2541;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.metric-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.metric-label {
+  font-size: 0.76rem;
+  color: #94A3B8;
+}
+
+.hero-box-callout {
+  background: rgba(230, 81, 0, 0.15);
+  border-left: 3px solid var(--primary);
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  color: #FFCC80;
+  line-height: 1.45;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover {
+  background-color: #F1F5F9;
+}
+
+.btn-dark {
+  background-color: var(--dark-panel);
+  color: #FFFFFF;
+  border-color: var(--dark-panel);
+}
+
+.btn-dark:hover {
+  background-color: #1C2541;
+}
+
+.btn-outline-danger {
+  background: transparent;
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.btn-outline-danger:hover {
+  background: var(--danger-bg);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+}
+
+/* ── Budget Control Bar ── */
+.budget-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.budget-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.budget-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.budget-input-wrapper label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input-rupiah {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  font-weight: 600;
+}
+
+.input-rupiah input {
+  border: none;
+  outline: none;
+  padding: 10px 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 140px;
+  color: var(--text-main);
+}
+
+.budget-stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.86rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-chip .lbl {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.stat-chip .val {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.stat-chip.total {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: var(--text-main);
+}
+.stat-chip.total .lbl { color: var(--text-subtle); }
+
+.stat-chip.used {
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  color: #E65100;
+}
+.stat-chip.used .lbl { color: #8D6E63; }
+
+.stat-chip.safe {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success-text);
+}
+.stat-chip.safe .lbl { color: #2E7D32; }
+
+.stat-chip.exceeded {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger-text);
+}
+.stat-chip.exceeded .lbl { color: #C62828; }
+
+/* ── Meal Planner Table ── */
+.table-scroll {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.plan-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.plan-table th,
+.plan-table td {
+  border: 1px solid var(--border);
+  padding: 10px;
+  vertical-align: top;
+}
+
+.plan-table th {
+  background: #F1F5F9;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.plan-table th:first-child {
+  width: 110px;
+  text-align: left;
+  padding-left: 14px;
+}
+
+.row-header {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: #FAFAFA;
+}
+
+.slot-card {
+  min-height: 80px;
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  border: 1px dashed var(--border);
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.slot-card:hover {
+  border-color: var(--primary);
+  background: #FFFBF9;
+}
+
+.slot-card.has-recipe {
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.slot-card.has-recipe:hover {
+  border-color: var(--border-strong);
+}
+
+.slot-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.slot-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.74rem;
+}
+
+.slot-price {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.slot-empty {
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.slot-remove {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 2px 4px;
+}
+
+.slot-remove:hover {
+  color: var(--danger-text);
+}
+
+.day-sum-cell {
+  background: #F8FAFC;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* ── Recipe Catalog & Filters ── */
+.catalog-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-field:focus {
+  border-color: var(--border-strong);
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-main);
+}
+
+.filter-btn.active {
+  background: var(--border-strong);
+  color: #FFFFFF;
+  border-color: var(--border-strong);
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.recipe-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.recipe-item:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.recipe-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.recipe-item-name {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
+.recipe-price-tag {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.recipe-item-metrics {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.recipe-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.tag-pill {
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: #F1F5F9;
+  color: var(--text-muted);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.recipe-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.btn-add-plan {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-add-plan:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+/* ── Shopping List ── */
+.shopping-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.shopping-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+
+.shopping-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.shopping-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #F1F5F9;
+  font-size: 0.84rem;
+}
+
+.shopping-row:last-child {
+  border-bottom: none;
+}
+
+.shopping-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.shopping-label input[type="checkbox"] {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+}
+
+.shopping-row.checked span.item-title {
+  text-decoration: line-through;
+  color: var(--text-subtle);
+}
+
+.item-cost {
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.shopping-summary-bar {
+  background: var(--dark-panel);
+  color: #FFFFFF;
+  padding: 18px 24px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ── Lean MVP Concierge / Airbnb-style Demand Validation ── */
+.validation-section {
+  background: #FFFDF9;
+  border-top: 2px solid #E65100;
+  border-bottom: 2px solid var(--border-strong);
+  padding: 56px 0;
+}
+
+.validation-box {
+  background: var(--surface);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 32px;
+}
+
+.validation-header {
+  margin-bottom: 24px;
+}
+
+.validation-tag {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--border-strong);
+  color: #FFFFFF;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.pkg-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pkg-card.featured {
+  border: 2px solid var(--primary);
+  background: #FFFAF5;
+}
+
+.pkg-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pkg-price {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.pkg-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.pkg-list {
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--text-main);
+  margin-bottom: 20px;
+}
+
+.pkg-list li {
+  padding: 4px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+/* ── Modal ── */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--surface);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  max-width: 580px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px;
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  background: #F1F5F9;
+}
+
+/* ── Footer ── */
+.site-footer {
+  background: var(--dark-panel);
+  color: #94A3B8;
+  padding: 48px 0 36px;
+  font-size: 0.85rem;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--dark-panel-border);
+}
+
+.footer-brand {
+  color: #FFFFFF;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.footer-col h4 {
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: 6px;
+}
+
+.footer-col a {
+  color: #94A3B8;
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  color: #FFFFFF;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+}
+
+/* ── Toast Notification ── */
+.toast-msg {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--border-strong);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.toast-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 860px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .nav-menu {
+    display: none;
+  }
+  .mobile-toggle {
+    display: block;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="brand">
+      <span class="brand-name">IcaMeal</span>
+      <span class="brand-badge">MVP</span>
+    </a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="#anggaran" class="nav-link">Anggaran</a></li>
+        <li><a href="#jadwal" class="nav-link">Jadwal Menu</a></li>
+        <li><a href="#resep" class="nav-link">Katalog Resep</a></li>
+        <li><a href="#belanja" class="nav-link">Daftar Belanja</a></li>
+        <li><a href="#validasi" class="nav-link">Paket Menu</a></li>
+      </ul>
+    </nav>
+    <a href="#jadwal" class="nav-cta">Susun Menu</a>
+  </div>
+</header>
+
+<!-- HERO OVERVIEW -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-heading">Perencanaan makan mingguan untuk mahasiswa kos sesuai anggaran.</h1>
+        <p class="hero-summary">
+          Tentukan batas anggaran makan Anda, pilih resep praktis ramah kantong, dan dapatkan jadwal menu 7 hari beserta rincian daftar belanja pasar secara otomatis.
+        </p>
+        <div class="hero-actions">
+          <a href="#jadwal" class="btn btn-primary">Buka Jadwal Menu</a>
+          <a href="#resep" class="btn btn-secondary">Lihat 18 Resep Kos</a>
+        </div>
+        <div class="hero-footnote">
+          Proyek Bisnis Digital — Kelompok 4: Aulia Anissatuzahro, Ainul Hasan, Ihza Akbari Shoma.
+        </div>
+      </div>
+      <div>
+        <div class="hero-box">
+          <div class="hero-box-title">Spesifikasi MVP (Minimum Viable Product)</div>
+          <div class="hero-metric-grid">
+            <div class="metric-card">
+              <div class="metric-val">18</div>
+              <div class="metric-label">Resep teruji anak kos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">&lt; Rp12.000</div>
+              <div class="metric-label">Biaya per porsi makan</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">7 Hari</div>
+              <div class="metric-label">Siklus jadwal otomatis</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">100%</div>
+              <div class="metric-label">Rincian harga per bahan</div>
+            </div>
+          </div>
+          <div class="hero-box-callout">
+            Model validasi langsung: Anda dapat menguji paket menu mingguan siap pakai atau memesan rekomendasi resep khusus via WhatsApp ke tim pengembang.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1: BUDGET CONTROL -->
+<section class="section" id="anggaran">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Anggaran Makan Mingguan</h2>
+      <p class="section-desc">
+        Masukkan batas maksimal pengeluaran makan Anda untuk 7 hari ke depan. Sistem akan memantau total estimasi belanja dan memberikan indikator saat biaya melebihi target.
+      </p>
+    </div>
+
+    <div class="budget-panel">
+      <div class="budget-flex">
+        <div class="budget-input-wrapper">
+          <label for="budgetInput">Target Anggaran 1 Minggu:</label>
+          <div class="input-rupiah">
+            <span>Rp</span>
+            <input type="number" id="budgetInput" value="150000" min="20000" step="5000">
+          </div>
+        </div>
+        <div class="budget-stats" id="budgetStatsContainer">
+          <div class="stat-chip total">
+            <span class="lbl">Batas Anggaran</span>
+            <span class="val" id="dispBudget">Rp150.000</span>
+          </div>
+          <div class="stat-chip used">
+            <span class="lbl">Estimasi Terpakai</span>
+            <span class="val" id="dispUsed">Rp0</span>
+          </div>
+          <div class="stat-chip safe" id="chipDiff">
+            <span class="lbl">Sisa Saldo</span>
+            <span class="val" id="dispDiff">Rp150.000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: MEAL PLANNER -->
+<section class="section" id="jadwal">
+  <div class="container">
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 class="section-title">Jadwal Menu 7 Hari</h2>
+        <p class="section-desc">
+          Klik pada setiap slot makan (Sarapan, Makan Siang, Makan Malam) untuk memilih menu. Gunakan tombol Isi Otomatis untuk menyusun jadwal sesuai anggaran Anda.
+        </p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary btn-sm" onclick="triggerAutoPlan()">Isi Otomatis Sesuai Anggaran</button>
+        <button class="btn btn-secondary btn-sm" onclick="savePlanToStorage()">Simpan Jadwal</button>
+        <button class="btn btn-outline-danger btn-sm" onclick="clearAllPlan()">Hapus Semua</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="plan-table" id="mealTable">
+        <!-- Rendered by JS -->
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: RECIPE CATALOG -->
+<section class="section" id="resep">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Katalog Resep Anak Kos</h2>
+      <p class="section-desc">
+        Kumpulan 18 resep sederhana dengan takaran porsi tunggal. Setiap resep dilengkapi rincian biaya bahan pasar tradisional dan informasi nilai gizi.
+      </p>
+    </div>
+
+    <div class="catalog-toolbar">
+      <input type="text" id="recipeSearchInput" class="search-field" placeholder="Cari resep berdasarkan nama atau bahan (misal: telur, tempe, bayam)...">
+      
+      <div class="filter-group" id="filterContainer">
+        <button class="filter-btn active" data-filter="all">Semua Resep</button>
+        <button class="filter-btn" data-filter="sarapan">Sarapan</button>
+        <button class="filter-btn" data-filter="makan siang">Makan Siang</button>
+        <button class="filter-btn" data-filter="makan malam">Makan Malam</button>
+        <button class="filter-btn" data-filter="hemat">&lt; Rp5.000</button>
+        <button class="filter-btn" data-filter="cepat">&le; 15 Menit</button>
+        <button class="filter-btn" data-filter="tinggi-protein">Tinggi Protein</button>
+        <button class="filter-btn" data-filter="sayuran">Sayuran / Serat</button>
+      </div>
+    </div>
+
+    <div class="recipe-grid" id="recipesGridContainer">
+      <!-- Recipe cards rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: SHOPPING LIST -->
+<section class="section" id="belanja">
+  <div class="container">
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 class="section-title">Daftar Belanja Bahan</h2>
+        <p class="section-desc">
+          Bahan-bahan dari jadwal menu Anda dikelompokkan berdasarkan jenis gerai pasar. Centang barang yang sudah Anda beli.
+        </p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="copyShoppingListText()">Salin Daftar Belanja</button>
+        <button class="btn btn-secondary btn-sm" onclick="resetCheckedItems()">Batal Centang</button>
+      </div>
+    </div>
+
+    <div class="shopping-grid" id="shoppingGridContainer">
+      <!-- Categorized shopping list items rendered by JS -->
+    </div>
+
+    <div class="shopping-summary-bar">
+      <div>
+        <span style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.04em; color:#94A3B8;">Total Estimasi Belanja Pasar</span>
+        <div style="font-size:1.45rem; font-weight:700;" id="totalShoppingCost">Rp0</div>
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="copyShoppingListText()">Salin Format WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: AIRBNB-STYLE CONCIERGE VALIDATION -->
+<section class="validation-section" id="validasi">
+  <div class="container">
+    <div class="validation-box">
+      <div class="validation-header">
+        <span class="validation-tag">Metode Validasi Permintaan</span>
+        <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:8px;">Pemesanan Panduan Menu Khusus Anak Kos</h2>
+        <p style="font-size:0.92rem; color:var(--text-muted); max-width:760px;">
+          Sesuai konsep lean startup (seperti awal mula Airbnb mengoperasikan layanan secara manual), kami melayani penyusunan meal plan kustom dan paket resep cetak langsung via WhatsApp untuk mengukur kebutuhan nyata pengguna sebelum pengembangan sistem otomatisasi skala penuh.
+        </p>
+      </div>
+
+      <div class="packages-grid">
+        <div class="pkg-card">
+          <div>
+            <div class="pkg-name">Paket Konsultasi Menu Kos</div>
+            <div class="pkg-price">Gratis</div>
+            <div class="pkg-desc">Konsultasi awal untuk menyesuaikan menu dengan alat masak kos yang Anda miliki (misal: hanya punya rice cooker).</div>
+            <ul class="pkg-list">
+              <li>&bull; Diskusi menu via WhatsApp</li>
+              <li>&bull; Penyesuaian anggaran mingguan</li>
+              <li>&bull; Rekomendasi belanja warung sekitar</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/?text=Halo%20Tim%20IcaMeal,%20saya%20tertarik%20konsultasi%20menu%20kos%20gratis" target="_blank" rel="noopener" class="btn btn-secondary">Konsultasi via WhatsApp</a>
+        </div>
+
+        <div class="pkg-card featured">
+          <div>
+            <div class="pkg-name">Paket 30 Hari Menu Hemat Kos</div>
+            <div class="pkg-price">Rp10.000</div>
+            <div class="pkg-desc">Dokumen PDF terstruktur berisi jadwal makan harian selama 1 bulan penuh dengan variasi lauk dan panduan belanja hemat pasar tradisional.</div>
+            <ul class="pkg-list">
+              <li>&bull; Jadwal makan 30 hari lengkap</li>
+              <li>&bull; Rincian belanja 4 siklus mingguan</li>
+              <li>&bull; Tips simpan bumbu agar tahan 3 minggu</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/?text=Halo%20Tim%20IcaMeal,%20saya%20ingin%20memesan%20Paket%2030%20Hari%20Menu%20Hemat%20Kos%20(Rp10.000)" target="_blank" rel="noopener" class="btn btn-primary">Pesan Paket Rp10.000</a>
+        </div>
+
+        <div class="pkg-card">
+          <div>
+            <div class="pkg-name">Paket 100 Resep Praktis Kos</div>
+            <div class="pkg-price">Rp15.000</div>
+            <div class="pkg-desc">Kompilasi resep praktis 1 panci dan rice cooker tanpa blender. Lengkap dengan panduan porsi per orang.</div>
+            <ul class="pkg-list">
+              <li>&bull; 100 resep dengan takaran pas</li>
+              <li>&bull; Kategori menu protein hemat</li>
+              <li>&bull; Pembaruan resep bulanan</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/?text=Halo%20Tim%20IcaMeal,%20saya%20ingin%20memesan%20Paket%20100%20Resep%20Praktis%20Kos%20(Rp15.000)" target="_blank" rel="noopener" class="btn btn-secondary">Pesan Paket Rp15.000</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">IcaMeal</div>
+        <p style="max-width:380px; line-height:1.6;">
+          Platform perencanaan menu makan berbasis anggaran untuk mahasiswa dan anak kos. Mengoptimalkan alokasi biaya harian dan meminimalkan bahan terbuang.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#anggaran">Atur Anggaran</a></li>
+          <li><a href="#jadwal">Jadwal Menu</a></li>
+          <li><a href="#resep">Katalog Resep</a></li>
+          <li><a href="#belanja">Daftar Belanja</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kelompok 4</h4>
+        <ul>
+          <li>Aulia Anissatuzahro</li>
+          <li>Ainul Hasan</li>
+          <li>Ihza Akbari Shoma</li>
+          <li>Bisnis Digital 2025/2026</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2025 IcaMeal. Proyek Bisnis Digital.</div>
+      <div>Dokumen rujukan: Business Model Canvas &amp; Product-Solution Fit.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL: RECIPE DETAIL -->
+<div class="modal-backdrop" id="recipeDetailModal" onclick="closeBackdrop(event, 'recipeDetailModal')">
+  <div class="modal-content">
+    <button class="modal-close-btn" onclick="closeModal('recipeDetailModal')">&times;</button>
+    <div id="recipeDetailBody">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SELECT RECIPE FOR SLOT -->
+<div class="modal-backdrop" id="slotPickerModal" onclick="closeBackdrop(event, 'slotPickerModal')">
+  <div class="modal-content">
+    <button class="modal-close-btn" onclick="closeModal('slotPickerModal')">&times;</button>
+    <h3 style="font-size:1.15rem; margin-bottom:12px;" id="slotPickerHeader">Pilih Resep</h3>
+    <input type="text" id="slotSearchField" class="search-field" style="margin-bottom:16px;" placeholder="Ketik nama menu..." oninput="filterSlotList()">
+    <div id="slotPickerList" style="display:flex; flex-direction:column; gap:8px; max-height:420px; overflow-y:auto;">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-msg" id="toastBox">Notifikasi</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA RESEP LENGKAP (18 Resep Realistis Anak Kos)
+// ═══════════════════════════════════════════════
+const RECIPES_DATA = [
+  {
+    id: 1,
+    nama: "Nasi Goreng Telur Kecap",
+    kategori: ["sarapan", "makan siang", "makan malam"],
+    waktuMenit: 12,
+    totalHarga: 7500,
+    kalori: 440,
+    protein: 14,
+    karbo: 58,
+    lemak: 15,
+    tags: ["cepat", "hemat"],
+    bahan: [
+      { nama: "Nasi putih", jumlah: "1 porsi", harga: 3000, gerai: "Sembako" },
+      { nama: "Telur ayam", jumlah: "1 butir", harga: 2500, gerai: "Protein" },
+      { nama: "Kecap manis", jumlah: "2 sdm", harga: 500, gerai: "Bumbu" },
+      { nama: "Bawang merah", jumlah: "2 siung", harga: 500, gerai: "Bumbu" },
+      { nama: "Bawang putih", jumlah: "1 siung", harga: 500, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "2 sdm", harga: 500, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Iris tipis bawang merah dan bawang putih.",
+      "Panaskan minyak goreng dalam wajan dengan api sedang.",
+      "Tumis bawang merah dan putih hingga harum dan mulai kekuningan.",
+      "Pecahkan telur, orak-arik hingga setengah matang.",
+      "Masukkan nasi putih, aduk rata dengan telur.",
+      "Beri kecap manis, garam, dan merica secukupnya. Masak 3 menit hingga meresap."
+    ]
+  },
+  {
+    id: 2,
+    nama: "Telur Dadar Sayur Wortel",
+    kategori: ["sarapan", "makan siang"],
+    waktuMenit: 10,
+    totalHarga: 5000,
+    kalori: 270,
+    protein: 16,
+    karbo: 6,
+    lemak: 18,
+    tags: ["tinggi-protein", "cepat", "hemat"],
+    bahan: [
+      { nama: "Telur ayam", jumlah: "2 butir", harga: 4000, gerai: "Protein" },
+      { nama: "Wortel serut", jumlah: "1/4 batang", harga: 400, gerai: "Sayuran" },
+      { nama: "Daun bawang", jumlah: "1 batang", harga: 300, gerai: "Sayuran" },
+      { nama: "Minyak goreng", jumlah: "1 sdm", harga: 300, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Kocok telur bersama sedikit garam dan kaldu bubuk.",
+      "Masukkan irisan wortel dan daun bawang ke adonan telur.",
+      "Panaskan minyak di wajan datar.",
+      "Goreng telur dengan api kecil agar bagian dalam matang merata.",
+      "Balik sekali, masak hingga kedua permukaan berwarna keemasan."
+    ]
+  },
+  {
+    id: 3,
+    nama: "Sayur Bayam Jagung Bening",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 15,
+    totalHarga: 4500,
+    kalori: 110,
+    protein: 5,
+    karbo: 18,
+    lemak: 1,
+    tags: ["sayuran", "hemat", "cepat"],
+    bahan: [
+      { nama: "Bayam segar", jumlah: "1 ikat", harga: 2000, gerai: "Sayuran" },
+      { nama: "Jagung manis potong", jumlah: "1/2 tongkol", harga: 1500, gerai: "Sayuran" },
+      { nama: "Bawang merah", jumlah: "2 siung", harga: 500, gerai: "Bumbu" },
+      { nama: "Garam & gula", jumlah: "secukupnya", harga: 500, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Rebus 500 ml air bersama irisan bawang merah hingga mendidih.",
+      "Masukkan jagung manis, rebus selama 5 menit sampai empuk.",
+      "Tambahkan garam dan sedikit gula pasir, koreksi rasa kuah.",
+      "Masukkan bayam yang sudah dicuci bersih.",
+      "Masak selama 1 hingga 2 menit sampai bayam layu, lalu segera angkat."
+    ]
+  },
+  {
+    id: 4,
+    nama: "Tempe Goreng Tepung Ketumbar",
+    kategori: ["sarapan", "makan siang", "makan malam"],
+    waktuMenit: 15,
+    totalHarga: 4000,
+    kalori: 260,
+    protein: 15,
+    karbo: 18,
+    lemak: 14,
+    tags: ["tinggi-protein", "hemat"],
+    bahan: [
+      { nama: "Tempe kedelai", jumlah: "1/2 papan", harga: 2000, gerai: "Protein" },
+      { nama: "Tepung terigu", jumlah: "3 sdm", harga: 600, gerai: "Sembako" },
+      { nama: "Bawang putih & ketumbar", jumlah: "secukupnya", harga: 600, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "secukupnya", harga: 800, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Iris tempe dengan ketebalan 0,5 cm.",
+      "Larutkan bumbu halus (bawang putih, ketumbar, garam) dengan tepung dan air encer.",
+      "Celupkan potongan tempe ke adonan tepung.",
+      "Goreng dalam minyak panas sedang sampai matang dan renyah.",
+      "Tiriskan sebelum disajikan."
+    ]
+  },
+  {
+    id: 5,
+    nama: "Nasi Ayam Goreng Kunyit",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 25,
+    totalHarga: 11000,
+    kalori: 520,
+    protein: 28,
+    karbo: 48,
+    lemak: 21,
+    tags: ["tinggi-protein"],
+    bahan: [
+      { nama: "Potongan ayam (paha/dada)", jumlah: "1 potong", harga: 6500, gerai: "Protein" },
+      { nama: "Nasi putih", jumlah: "1 porsi", harga: 3000, gerai: "Sembako" },
+      { nama: "Bumbu marinasi kunyit & bawang", jumlah: "1 porsi", harga: 800, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "secukupnya", harga: 700, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Lumuri potongan ayam dengan bumbu kunyit, bawang putih, dan garam. Diamkan 10 menit.",
+      "Ungkep ayam dengan sedikit air hingga bumbu meresap dan air menyusut.",
+      "Goreng ayam dalam minyak panas hingga berwarna cokelat keemasan.",
+      "Sajikan bersama nasi putih hangat."
+    ]
+  },
+  {
+    id: 6,
+    nama: "Capcay Sederhana Bakso Sayur",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 18,
+    totalHarga: 8000,
+    kalori: 210,
+    protein: 11,
+    karbo: 20,
+    lemak: 8,
+    tags: ["sayuran"],
+    bahan: [
+      { nama: "Sawi putih & wortel", jumlah: "1 mangkuk", harga: 2500, gerai: "Sayuran" },
+      { nama: "Bakso sapi potong", jumlah: "3 butir", harga: 3000, gerai: "Protein" },
+      { nama: "Bawang putih", jumlah: "2 siung", harga: 500, gerai: "Bumbu" },
+      { nama: "Saus tiram & maizena", jumlah: "secukupnya", harga: 1000, gerai: "Bumbu" },
+      { nama: "Minyak tumis", jumlah: "1 sdm", harga: 1000, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Tumis bawang putih cincang hingga harum.",
+      "Masukkan irisan bakso dan wortel, beri sedikit air, masak 3 menit.",
+      "Tambahkan sawi putih, saus tiram, dan garam.",
+      "Beri larutan maizena sedikit untuk mengentalkan kuah.",
+      "Aduk sebentar lalu matikan api."
+    ]
+  },
+  {
+    id: 7,
+    nama: "Oatmeal Susu Pisang",
+    kategori: ["sarapan"],
+    waktuMenit: 6,
+    totalHarga: 6000,
+    kalori: 320,
+    protein: 9,
+    karbo: 56,
+    lemak: 5,
+    tags: ["cepat"],
+    bahan: [
+      { nama: "Oatmeal instan", jumlah: "4 sdm", harga: 3000, gerai: "Sembako" },
+      { nama: "Susu cair putih", jumlah: "100 ml", harga: 1500, gerai: "Protein" },
+      { nama: "Pisang kepok / ambon", jumlah: "1 buah", harga: 1500, gerai: "Sayuran" }
+    ],
+    langkah: [
+      "Campurkan oatmeal dengan susu cair dan 50 ml air panas.",
+      "Aduk rata hingga oat mengembang lembut.",
+      "Potong pisang melintang, tata di atas mangkuk oatmeal.",
+      "Menu siap disantap tanpa perlu kompor."
+    ]
+  },
+  {
+    id: 8,
+    nama: "Sandwich Telur Lipat",
+    kategori: ["sarapan"],
+    waktuMenit: 8,
+    totalHarga: 5000,
+    kalori: 310,
+    protein: 13,
+    karbo: 34,
+    lemak: 12,
+    tags: ["cepat", "hemat"],
+    bahan: [
+      { nama: "Roti tawar", jumlah: "2 lembar", harga: 2000, gerai: "Sembako" },
+      { nama: "Telur ayam", jumlah: "1 butir", harga: 2200, gerai: "Protein" },
+      { nama: "Margarin", jumlah: "1 sdm", harga: 500, gerai: "Bumbu" },
+      { nama: "Garam & lada", jumlah: "secukupnya", harga: 300, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Kocok telur bersama garam dan lada.",
+      "Lelehkan margarin di teflon, tuang kocokan telur.",
+      "Letakkan dua lembar roti di atas telur setengah matang, lalu balik bersamaan.",
+      "Lipat pinggiran telur ke dalam roti, lalu tangkupkan roti menjadi sandwich panggang."
+    ]
+  },
+  {
+    id: 9,
+    nama: "Soto Ayam Kuah Bening",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 30,
+    totalHarga: 10000,
+    kalori: 390,
+    protein: 26,
+    karbo: 38,
+    lemak: 11,
+    tags: ["tinggi-protein"],
+    bahan: [
+      { nama: "Daging ayam rebus suwir", jumlah: "75 gram", harga: 5000, gerai: "Protein" },
+      { nama: "Bihun jagung rendam", jumlah: "1 keping", harga: 1500, gerai: "Sembako" },
+      { nama: "Kol & tauge", jumlah: "1 genggam", harga: 1000, gerai: "Sayuran" },
+      { nama: "Bumbu soto & sereh", jumlah: "1 porsi", harga: 1500, gerai: "Bumbu" },
+      { nama: "Jeruk nipis", jumlah: "1/2 buah", harga: 1000, gerai: "Sayuran" }
+    ],
+    langkah: [
+      "Rebus ayam dengan bumbu soto, daun jeruk, dan sereh geprek hingga harum.",
+      "Angkat ayam, suwir dagingnya.",
+      "Seduh bihun dan tauge dengan air panas, lalu tiriskan.",
+      "Tata bihun, tauge, kol, dan suwiran ayam di mangkuk.",
+      "Siram dengan kuah soto panas dan beri perasan jeruk nipis."
+    ]
+  },
+  {
+    id: 10,
+    nama: "Pecel Sayur Bumbu Kacang",
+    kategori: ["makan siang"],
+    waktuMenit: 12,
+    totalHarga: 6000,
+    kalori: 290,
+    protein: 11,
+    karbo: 39,
+    lemak: 9,
+    tags: ["sayuran", "cepat"],
+    bahan: [
+      { nama: "Bayam & tauge", jumlah: "1 piring", harga: 2000, gerai: "Sayuran" },
+      { nama: "Bumbu pecel instan", jumlah: "1 blok kecil", harga: 2000, gerai: "Bumbu" },
+      { nama: "Nasi putih", jumlah: "1/2 porsi", harga: 2000, gerai: "Sembako" }
+    ],
+    langkah: [
+      "Rebus bayam dan tauge secara bergantian, jangan terlalu layu, tiriskan.",
+      "Larutkan bumbu pecel dengan 3 sendok makan air panas sampai kental.",
+      "Susun nasi dan sayuran rebus di piring.",
+      "Siram bumbu pecel di atas sayuran."
+    ]
+  },
+  {
+    id: 11,
+    nama: "Tahu Goreng Bawang Renyah",
+    kategori: ["sarapan", "makan siang", "makan malam"],
+    waktuMenit: 12,
+    totalHarga: 3500,
+    kalori: 190,
+    protein: 12,
+    karbo: 8,
+    lemak: 12,
+    tags: ["tinggi-protein", "cepat", "hemat"],
+    bahan: [
+      { nama: "Tahu putih potong dadu", jumlah: "2 potong", harga: 1800, gerai: "Protein" },
+      { nama: "Bawang putih halus & garam", jumlah: "1 porsi", harga: 500, gerai: "Bumbu" },
+      { nama: "Tepung maizena tipis", jumlah: "1 sdm", harga: 400, gerai: "Sembako" },
+      { nama: "Minyak goreng", jumlah: "secukupnya", harga: 800, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Rendam tahu dalam air garam dan bawang putih selama 5 menit.",
+      "Balurkan tipis-tipis dengan maizena agar saat digoreng tidak meletup.",
+      "Goreng dalam minyak panas sampai bagian luar garing kecokelatan.",
+      "Angkat dan tiriskan."
+    ]
+  },
+  {
+    id: 12,
+    nama: "Tumis Kangkung Terasi Tempe",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 14,
+    totalHarga: 7000,
+    kalori: 360,
+    protein: 15,
+    karbo: 45,
+    lemak: 11,
+    tags: ["sayuran", "tinggi-protein"],
+    bahan: [
+      { nama: "Kangkung segar", jumlah: "1 ikat", harga: 2000, gerai: "Sayuran" },
+      { nama: "Tempe potong dadu", jumlah: "1/4 papan", harga: 1200, gerai: "Protein" },
+      { nama: "Nasi putih", jumlah: "1 porsi", harga: 2500, gerai: "Sembako" },
+      { nama: "Cabai, bawang & terasi", jumlah: "secukupnya", harga: 800, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "1 sdm", harga: 500, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Goreng setengah matang potongan tempe, sisihkan.",
+      "Tumis irisan cabai, bawang merah, dan sedikit terasi sampai wangi.",
+      "Masukkan kangkung dengan api besar, aduk cepat.",
+      "Masukkan tempe dan garam, beri 2 sdm air.",
+      "Masak 1 menit agar kangkung tetap renyah dan berwarna hijau segar."
+    ]
+  },
+  {
+    id: 13,
+    nama: "Roti Panggang Selai Cokelat",
+    kategori: ["sarapan"],
+    waktuMenit: 5,
+    totalHarga: 4000,
+    kalori: 270,
+    protein: 5,
+    karbo: 42,
+    lemak: 9,
+    tags: ["cepat", "hemat"],
+    bahan: [
+      { nama: "Roti tawar", jumlah: "2 lembar", harga: 2000, gerai: "Sembako" },
+      { nama: "Selai cokelat", jumlah: "2 sdm", harga: 1400, gerai: "Bumbu" },
+      { nama: "Margarin oles", jumlah: "1 sdt", harga: 600, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Oleskan selai cokelat di permukaan dalam roti.",
+      "Olesi bagian luar roti dengan sedikit margarin.",
+      "Panggang di teflon api kecil selama 2 menit per sisi.",
+      "Angkat saat roti mulai garing."
+    ]
+  },
+  {
+    id: 14,
+    nama: "Mie Rebus Telur Sawi",
+    kategori: ["makan malam"],
+    waktuMenit: 10,
+    totalHarga: 6000,
+    kalori: 430,
+    protein: 15,
+    karbo: 54,
+    lemak: 17,
+    tags: ["cepat"],
+    bahan: [
+      { nama: "Mie instan kuah", jumlah: "1 bungkus", harga: 3000, gerai: "Sembako" },
+      { nama: "Telur ayam", jumlah: "1 butir", harga: 2200, gerai: "Protein" },
+      { nama: "Sawi hijau potong", jumlah: "2 lembar", harga: 500, gerai: "Sayuran" },
+      { nama: "Cabai rawit iris", jumlah: "2 buah", harga: 300, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Didihkan 400 ml air dalam panci kecil.",
+      "Masukkan mie instan dan sawi hijau.",
+      "Pecahkan telur langsung ke rebusan kuah, diamkan sebentar agar kuning telur setengah matang.",
+      "Tuangkan bumbu mie ke mangkuk.",
+      "Tuang rebusan mie, telur, dan kuah ke mangkuk, aduk perlahan."
+    ]
+  },
+  {
+    id: 15,
+    nama: "Nasi Sambal Teri Tahu",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 20,
+    totalHarga: 8500,
+    kalori: 460,
+    protein: 20,
+    karbo: 49,
+    lemak: 16,
+    tags: ["tinggi-protein"],
+    bahan: [
+      { nama: "Nasi putih", jumlah: "1 porsi", harga: 2500, gerai: "Sembako" },
+      { nama: "Teri asin tawar cuci bersih", jumlah: "2 sdm", harga: 2500, gerai: "Protein" },
+      { nama: "Tahu putih goreng dadu", jumlah: "1 potong", harga: 1000, gerai: "Protein" },
+      { nama: "Cabai merah & bawang", jumlah: "1 porsi", harga: 1500, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "1 sdm", harga: 1000, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Goreng teri hingga kering dan renyah, angkat.",
+      "Ulek kasar cabai merah, bawang merah, dan sedikit garam.",
+      "Tumis bumbu ulek sampai matang dan hilang bau langunya.",
+      "Campurkan tahu goreng dan teri ke dalam tumisan sambal.",
+      "Sajikan bersama nasi putih."
+    ]
+  },
+  {
+    id: 16,
+    nama: "Bubur Beras Suwir Ayam",
+    kategori: ["sarapan"],
+    waktuMenit: 28,
+    totalHarga: 7000,
+    kalori: 320,
+    protein: 17,
+    karbo: 46,
+    lemak: 7,
+    tags: ["tinggi-protein"],
+    bahan: [
+      { nama: "Beras masak bubur", jumlah: "1/2 cangkir", harga: 1500, gerai: "Sembako" },
+      { nama: "Ayam suwir matang", jumlah: "40 gram", harga: 3500, gerai: "Protein" },
+      { nama: "Kecap asin & bawang goreng", jumlah: "secukupnya", harga: 1000, gerai: "Bumbu" },
+      { nama: "Daun bawang iris", jumlah: "1 batang", harga: 1000, gerai: "Sayuran" }
+    ],
+    langkah: [
+      "Masak beras dalam panci dengan air perbandingan 1:6 sampai menjadi bubur lembut.",
+      "Beri sedikit garam dan kaldu ayam pada bubur.",
+      "Tuang bubur ke mangkuk saji.",
+      "Beri suwiran ayam, daun bawang, bawang goreng, dan kecap asin."
+    ]
+  },
+  {
+    id: 17,
+    nama: "Nasi Telur Ceplok Balado",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 15,
+    totalHarga: 6500,
+    kalori: 410,
+    protein: 14,
+    karbo: 50,
+    lemak: 16,
+    tags: ["tinggi-protein", "cepat"],
+    bahan: [
+      { nama: "Nasi putih", jumlah: "1 porsi", harga: 2500, gerai: "Sembako" },
+      { nama: "Telur ceplok matang", jumlah: "1 butir", harga: 2300, gerai: "Protein" },
+      { nama: "Cabai merah halus & tomat", jumlah: "1 porsi", harga: 1200, gerai: "Bumbu" },
+      { nama: "Minyak tumis", jumlah: "1 sdm", harga: 500, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Ceplok telur hingga bagian tepi renyah, tiriskan.",
+      "Tumis sambal balado cabai merah dan tomat halus hingga matang dan harum.",
+      "Beri garam dan gula secukupnya.",
+      "Masukkan telur ceplok ke sambal, aduk pelan agar tidak hancur.",
+      "Sajikan di atas nasi putih hangat."
+    ]
+  },
+  {
+    id: 18,
+    nama: "Tumis Tauge Tahu Bawang",
+    kategori: ["makan siang", "makan malam"],
+    waktuMenit: 10,
+    totalHarga: 4500,
+    kalori: 180,
+    protein: 11,
+    karbo: 12,
+    lemak: 9,
+    tags: ["sayuran", "cepat", "hemat"],
+    bahan: [
+      { nama: "Tauge segar", jumlah: "1 genggam", harga: 1500, gerai: "Sayuran" },
+      { nama: "Tahu putih goreng dadu", jumlah: "1 potong", harga: 1200, gerai: "Protein" },
+      { nama: "Bawang merah & putih iris", jumlah: "1 porsi", harga: 800, gerai: "Bumbu" },
+      { nama: "Minyak goreng", jumlah: "1 sdm", harga: 1000, gerai: "Bumbu" }
+    ],
+    langkah: [
+      "Tumis bawang merah dan bawang putih cincang hingga harum.",
+      "Masukkan tahu goreng dadu, aduk sebentar.",
+      "Masukkan tauge dan sedikit garam serta kaldu bubuk.",
+      "Masak selama 1 menit dengan api besar agar tauge tetap renyah, lalu angkat."
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════
+// STATE MANAJEMEN APLIKASI
+// ═══════════════════════════════════════════════
+const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+const MEALS = ["Sarapan", "Makan Siang", "Makan Malam"];
+
+let currentPlan = {};       // format: { "Senin-Sarapan": 1, ... }
+let checkedGrocery = {};    // format: { "Bayam segar": true, ... }
+let activeFilter = "all";
+let searchKeyword = "";
+let pendingSlot = null;     // { day, meal }
+
+// Format Mata Uang Rupiah
+function toIDR(num) {
+  return "Rp" + Math.round(num).toLocaleString("id-ID");
+}
+
+function getBudgetLimit() {
+  const input = document.getElementById("budgetInput");
+  const val = parseInt(input.value, 10);
+  return isNaN(val) ? 0 : val;
+}
+
+function calculatePlanTotalCost() {
+  let sum = 0;
+  for (const slotKey in currentPlan) {
+    const recipeId = currentPlan[slotKey];
+    const rec = RECIPES_DATA.find(r => r.id === recipeId);
+    if (rec) sum += rec.totalHarga;
+  }
+  return sum;
+}
+
+function calculateDayTotalCost(day) {
+  let sum = 0;
+  MEALS.forEach(meal => {
+    const key = `${day}-${meal}`;
+    const id = currentPlan[key];
+    if (id) {
+      const rec = RECIPES_DATA.find(r => r.id === id);
+      if (rec) sum += rec.totalHarga;
+    }
+  });
+  return sum;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER JADWAL MENU (TABLE)
+// ═══════════════════════════════════════════════
+function renderPlanTable() {
+  const table = document.getElementById("mealTable");
+  let html = "<thead><tr><th>Waktu</th>";
+  DAYS.forEach(day => {
+    html += `<th>${day}</th>`;
+  });
+  html += "</tr></thead><tbody>";
+
+  MEALS.forEach(meal => {
+    html += `<tr><td class="row-header">${meal}</td>`;
+    DAYS.forEach(day => {
+      const key = `${day}-${meal}`;
+      const recId = currentPlan[key];
+      const rec = recId ? RECIPES_DATA.find(r => r.id === recId) : null;
+
+      if (rec) {
+        html += `
+          <td>
+            <div class="slot-card has-recipe" onclick="openSlotPicker('${day}', '${meal}')">
+              <div>
+                <div class="slot-title">${rec.nama}</div>
+              </div>
+              <div class="slot-meta">
+                <span class="slot-price">${toIDR(rec.totalHarga)}</span>
+                <button type="button" class="slot-remove" title="Hapus menu ini" onclick="event.stopPropagation(); removeSlotRecipe('${key}')">&times;</button>
+              </div>
+            </div>
+          </td>
+        `;
+      } else {
+        html += `
+          <td>
+            <div class="slot-card" onclick="openSlotPicker('${day}', '${meal}')">
+              <span class="slot-empty">+ Pilih Resep</span>
+            </div>
+          </td>
+        `;
+      }
+    });
+    html += "</tr>";
+  });
+
+  // Daily Subtotals Row
+  html += `<tr><td class="row-header" style="font-size:0.76rem; text-transform:uppercase;">Biaya Harian</td>`;
+  DAYS.forEach(day => {
+    const daySum = calculateDayTotalCost(day);
+    html += `<td class="day-sum-cell">${toIDR(daySum)}</td>`;
+  });
+  html += `</tr></tbody>`;
+
+  table.innerHTML = html;
+  updateBudgetMetrics();
+  renderShoppingList();
+}
+
+function removeSlotRecipe(slotKey) {
+  delete currentPlan[slotKey];
+  renderPlanTable();
+  showToast("Menu dihapus dari jadwal.");
+}
+
+function clearAllPlan() {
+  if (confirm("Kosongkan semua rencana makan untuk 7 hari?")) {
+    currentPlan = {};
+    renderPlanTable();
+    showToast("Jadwal menu telah dikosongkan.");
+  }
+}
+
+// ═══════════════════════════════════════════════
+// UPDATE BUDGET METRICS
+// ═══════════════════════════════════════════════
+function updateBudgetMetrics() {
+  const budget = getBudgetLimit();
+  const used = calculatePlanTotalCost();
+  const diff = budget - used;
+
+  document.getElementById("dispBudget").textContent = toIDR(budget);
+  document.getElementById("dispUsed").textContent = toIDR(used);
+
+  const chipDiff = document.getElementById("chipDiff");
+  const diffLabel = chipDiff.querySelector(".lbl");
+  const diffVal = document.getElementById("dispDiff");
+
+  if (diff >= 0) {
+    chipDiff.className = "stat-chip safe";
+    diffLabel.textContent = "Sisa Anggaran";
+    diffVal.textContent = toIDR(diff);
+  } else {
+    chipDiff.className = "stat-chip exceeded";
+    diffLabel.textContent = "Melebihi Anggaran";
+    diffVal.textContent = toIDR(Math.abs(diff));
+  }
+}
+
+document.getElementById("budgetInput").addEventListener("input", () => {
+  updateBudgetMetrics();
+});
+
+// ═══════════════════════════════════════════════
+// ALGORITMA REKOMENDASI OTOMATIS SESUAI BUDGET
+// ═══════════════════════════════════════════════
+function triggerAutoPlan() {
+  const budget = getBudgetLimit();
+  if (budget <= 0) {
+    alert("Silakan masukkan nilai anggaran mingguan yang valid.");
+    return;
+  }
+
+  const newPlan = {};
+  const mealMap = {
+    "Sarapan": "sarapan",
+    "Makan Siang": "makan siang",
+    "Makan Malam": "makan malam"
+  };
+
+  const avgPerMeal = budget / 21; // 21 waktu makan dalam seminggu
+
+  DAYS.forEach(day => {
+    MEALS.forEach(meal => {
+      const cat = mealMap[meal];
+      let candidates = RECIPES_DATA.filter(r => r.kategori.includes(cat));
+      if (candidates.length === 0) candidates = RECIPES_DATA;
+
+      // Filter preferensi harga yang tidak melampaui rata-rata porsi + 25%
+      let viable = candidates.filter(r => r.totalHarga <= (avgPerMeal * 1.35));
+      if (viable.length === 0) {
+        viable = candidates.sort((a, b) => a.totalHarga - b.totalHarga).slice(0, 4);
+      }
+
+      const randomPick = viable[Math.floor(Math.random() * viable.length)];
+      newPlan[`${day}-${meal}`] = randomPick.id;
+    });
+  });
+
+  currentPlan = newPlan;
+  renderPlanTable();
+  showToast("Jadwal menu mingguan otomatis telah disusun sesuai anggaran.");
+}
+
+// ═══════════════════════════════════════════════
+// KATALOG RESEP & FILTER
+// ═══════════════════════════════════════════════
+function renderRecipeCatalog() {
+  const container = document.getElementById("recipesGridContainer");
+  const filtered = RECIPES_DATA.filter(recipe => {
+    const q = searchKeyword.toLowerCase().trim();
+    const matchSearch = !q ||
+      recipe.nama.toLowerCase().includes(q) ||
+      recipe.bahan.some(b => b.nama.toLowerCase().includes(q)) ||
+      recipe.tags.some(t => t.toLowerCase().includes(q));
+
+    if (!matchSearch) return false;
+
+    if (activeFilter === "all") return true;
+    if (activeFilter === "hemat") return recipe.totalHarga < 5000;
+    if (activeFilter === "cepat") return recipe.waktuMenit <= 15;
+    if (activeFilter === "tinggi-protein") return recipe.tags.includes("tinggi-protein");
+    if (activeFilter === "sayuran") return recipe.tags.includes("sayuran");
+    return recipe.kategori.includes(activeFilter);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+        Tidak ditemukan resep yang sesuai dengan kata kunci atau filter saat ini.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(r => `
+    <div class="recipe-item" onclick="openRecipeDetailModal(${r.id})">
+      <div>
+        <div class="recipe-header-row">
+          <div class="recipe-item-name">${r.nama}</div>
+          <div class="recipe-price-tag">${toIDR(r.totalHarga)}</div>
+        </div>
+        <div class="recipe-item-metrics">
+          <span>${r.waktuMenit} menit</span>
+          <span>${r.kalori} kkal</span>
+          <span>${r.protein}g protein</span>
+        </div>
+        <div class="recipe-item-tags">
+          ${r.kategori.map(k => `<span class="tag-pill">${k}</span>`).join("")}
+          ${r.tags.map(t => `<span class="tag-pill">${t}</span>`).join("")}
+        </div>
+      </div>
+      <div class="recipe-card-footer">
+        <span style="font-size:0.75rem; color:var(--text-subtle);">${r.bahan.length} bahan</span>
+        <button type="button" class="btn-add-plan" onclick="event.stopPropagation(); quickAddToNextAvailableSlot(${r.id})">+ Ke Jadwal</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function quickAddToNextAvailableSlot(recipeId) {
+  // Cari slot kosong pertama
+  for (const day of DAYS) {
+    for (const meal of MEALS) {
+      const key = `${day}-${meal}`;
+      if (!currentPlan[key]) {
+        currentPlan[key] = recipeId;
+        renderPlanTable();
+        const rec = RECIPES_DATA.find(r => r.id === recipeId);
+        showToast(`Ditambahkan ke ${day} (${meal}): ${rec.nama}`);
+        return;
+      }
+    }
+  }
+  showToast("Semua slot jadwal sudah penuh. Klik slot langsung untuk mengganti.");
+}
+
+// Event Listeners Filter Resep
+document.getElementById("filterContainer").addEventListener("click", e => {
+  if (!e.target.classList.contains("filter-btn")) return;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  e.target.classList.add("active");
+  activeFilter = e.target.dataset.filter;
+  renderRecipeCatalog();
+});
+
+document.getElementById("recipeSearchInput").addEventListener("input", e => {
+  searchKeyword = e.target.value;
+  renderRecipeCatalog();
+});
+
+// ═══════════════════════════════════════════════
+// DAFTAR BELANJA PASAR OTOMATIS
+// ═══════════════════════════════════════════════
+function renderShoppingList() {
+  const grid = document.getElementById("shoppingGridContainer");
+  const aggregated = {}; // nama: { jumlah: [], harga: 0, gerai: "" }
+
+  for (const slot in currentPlan) {
+    const id = currentPlan[slot];
+    const rec = RECIPES_DATA.find(r => r.id === id);
+    if (!rec) continue;
+
+    rec.bahan.forEach(item => {
+      if (!aggregated[item.nama]) {
+        aggregated[item.nama] = {
+          count: 0,
+          jumlah: item.jumlah,
+          harga: 0,
+          gerai: item.gerai || "Lainnya"
+        };
+      }
+      aggregated[item.nama].count += 1;
+      aggregated[item.nama].harga += item.harga;
+    });
+  }
+
+  const itemsArray = Object.keys(aggregated);
+  if (itemsArray.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md);">
+        Daftar belanja masih kosong. Tambahkan menu ke jadwal untuk membuat daftar bahan otomatis.
+      </div>
+    `;
+    document.getElementById("totalShoppingCost").textContent = "Rp0";
+    return;
+  }
+
+  // Kelompokkan berdasarkan gerai
+  const categories = {
+    "Sayuran": [],
+    "Protein": [],
+    "Sembako": [],
+    "Bumbu": []
+  };
+
+  let totalCost = 0;
+
+  for (const name in aggregated) {
+    const entry = aggregated[name];
+    totalCost += entry.harga;
+    const cat = categories[entry.gerai] ? entry.gerai : "Sembako";
+    categories[cat].push({
+      nama: name,
+      qty: entry.count > 1 ? `${entry.jumlah} (&times;${entry.count} porsi)` : entry.jumlah,
+      harga: entry.harga
+    });
+  }
+
+  document.getElementById("totalShoppingCost").textContent = toIDR(totalCost);
+
+  let html = "";
+  for (const [catName, list] of Object.entries(categories)) {
+    if (list.length === 0) continue;
+    html += `
+      <div class="shopping-card">
+        <div class="shopping-card-title">${catName} (${list.length} item)</div>
+        <div>
+          ${list.map(item => {
+            const isChecked = !!checkedGrocery[item.nama];
+            return `
+              <div class="shopping-row ${isChecked ? "checked" : ""}">
+                <label class="shopping-label">
+                  <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleGroceryItem('${item.nama}', this)">
+                  <span class="item-title">${item.nama} <span style="font-size:0.75rem; color:var(--text-subtle);">(${item.qty})</span></span>
+                </label>
+                <span class="item-cost">${toIDR(item.harga)}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+}
+
+function toggleGroceryItem(itemName, checkbox) {
+  checkedGrocery[itemName] = checkbox.checked;
+  const row = checkbox.closest(".shopping-row");
+  if (row) {
+    row.classList.toggle("checked", checkbox.checked);
+  }
+}
+
+function resetCheckedItems() {
+  checkedGrocery = {};
+  renderShoppingList();
+  showToast("Status centang daftar belanja telah direset.");
+}
+
+function copyShoppingListText() {
+  const aggregated = {};
+  for (const slot in currentPlan) {
+    const id = currentPlan[slot];
+    const rec = RECIPES_DATA.find(r => r.id === id);
+    if (!rec) continue;
+    rec.bahan.forEach(item => {
+      if (!aggregated[item.nama]) {
+        aggregated[item.nama] = { count: 0, harga: 0, gerai: item.gerai, qty: item.jumlah };
+      }
+      aggregated[item.nama].count += 1;
+      aggregated[item.nama].harga += item.harga;
+    });
+  }
+
+  if (Object.keys(aggregated).length === 0) {
+    showToast("Jadwal menu masih kosong.");
+    return;
+  }
+
+  let text = "*DAFTAR BELANJA PASAR — ICAMEAL*\n";
+  text += "Estimasi 1 Minggu:\n\n";
+
+  let total = 0;
+  for (const name in aggregated) {
+    const item = aggregated[name];
+    total += item.harga;
+    const qtyStr = item.count > 1 ? `${item.qty} (x${item.count})` : item.qty;
+    text += `[ ] ${name} - ${qtyStr} : ${toIDR(item.harga)}\n`;
+  }
+
+  text += `\n*TOTAL ESTIMASI: ${toIDR(total)}*`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Daftar belanja disalin ke clipboard!");
+  }).catch(() => {
+    showToast("Berhasil disalin.");
+  });
+}
+
+// ═══════════════════════════════════════════════
+// MODAL: DETAIL RESEP
+// ═══════════════════════════════════════════════
+function openRecipeDetailModal(recipeId) {
+  const rec = RECIPES_DATA.find(r => r.id === recipeId);
+  if (!rec) return;
+
+  const body = document.getElementById("recipeDetailBody");
+  body.innerHTML = `
+    <h2 style="font-size:1.35rem; font-weight:700; margin-bottom:8px;">${rec.nama}</h2>
+    <div style="display:flex; gap:12px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
+      <span>Estimasi: <strong>${toIDR(rec.totalHarga)}</strong></span>
+      <span>Waktu: <strong>${rec.waktuMenit} menit</strong></span>
+      <span>Kalori: <strong>${rec.kalori} kkal</strong></span>
+    </div>
+
+    <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; margin-bottom:18px;">
+      <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-subtle); margin-bottom:6px;">Profil Nutrisi</div>
+      <div style="display:flex; justify-content:space-around; font-size:0.84rem;">
+        <div>Protein: <strong>${rec.protein}g</strong></div>
+        <div>Karbohidrat: <strong>${rec.karbo}g</strong></div>
+        <div>Lemak: <strong>${rec.lemak}g</strong></div>
+      </div>
+    </div>
+
+    <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:8px;">Rincian Bahan &amp; Harga</h4>
+    <ul style="list-style:none; font-size:0.84rem; margin-bottom:20px; border:1px solid var(--border); border-radius:var(--radius-sm);">
+      ${rec.bahan.map(b => `
+        <li style="display:flex; justify-content:space-between; padding:8px 12px; border-bottom:1px solid #F1F5F9;">
+          <span>${b.nama} (${b.jumlah})</span>
+          <span style="font-weight:600;">${toIDR(b.harga)}</span>
+        </li>
+      `).join("")}
+    </ul>
+
+    <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:8px;">Langkah Memasak Praktis</h4>
+    <ol style="padding-left:20px; font-size:0.84rem; line-height:1.6; color:var(--text-main); margin-bottom:24px;">
+      ${rec.langkah.map(step => `<li style="margin-bottom:6px;">${step}</li>`).join("")}
+    </ol>
+
+    <button type="button" class="btn btn-primary" style="width:100%;" onclick="quickAddToNextAvailableSlot(${rec.id}); closeModal('recipeDetailModal');">Tambahkan Menu Ini ke Jadwal</button>
+  `;
+
+  document.getElementById("recipeDetailModal").classList.add("active");
+}
+
+// ═══════════════════════════════════════════════
+// MODAL: PEMILIH RESEP UNTUK SLOT JADWAL
+// ═══════════════════════════════════════════════
+function openSlotPicker(day, meal) {
+  pendingSlot = { day, meal };
+  document.getElementById("slotPickerHeader").textContent = `Pilih Menu untuk ${day} — ${meal}`;
+  document.getElementById("slotSearchField").value = "";
+  renderSlotPickerItems("");
+  document.getElementById("slotPickerModal").classList.add("active");
+}
+
+function filterSlotList() {
+  const query = document.getElementById("slotSearchField").value;
+  renderSlotPickerItems(query);
+}
+
+function renderSlotPickerItems(query) {
+  const container = document.getElementById("slotPickerList");
+  const q = query.toLowerCase().trim();
+
+  const filtered = RECIPES_DATA.filter(r => {
+    return !q || r.nama.toLowerCase().includes(q) || r.bahan.some(b => b.nama.toLowerCase().includes(q));
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:0.85rem;">Tidak ada menu yang sesuai.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(r => `
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; background:#FFFFFF;" 
+         onmouseover="this.style.borderColor='var(--border-strong)'" 
+         onmouseout="this.style.borderColor='var(--border)'"
+         onclick="assignRecipeToSlot(${r.id})">
+      <div>
+        <div style="font-size:0.9rem; font-weight:600;">${r.nama}</div>
+        <div style="font-size:0.75rem; color:var(--text-subtle);">${r.waktuMenit} menit &bull; ${r.kalori} kkal</div>
+      </div>
+      <div style="font-size:0.86rem; font-weight:700; color:var(--primary);">${toIDR(r.totalHarga)}</div>
+    </div>
+  `).join("");
+}
+
+function assignRecipeToSlot(recipeId) {
+  if (!pendingSlot) return;
+  const key = `${pendingSlot.day}-${pendingSlot.meal}`;
+  currentPlan[key] = recipeId;
+  closeModal("slotPickerModal");
+  renderPlanTable();
+  const rec = RECIPES_DATA.find(r => r.id === recipeId);
+  showToast(`Menu ditetapkan: ${rec.nama}`);
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove("active");
+}
+
+function closeBackdrop(event, modalId) {
+  if (event.target.id === modalId) {
+    closeModal(modalId);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LOCAL STORAGE PERSISTENCE
+// ═══════════════════════════════════════════════
+function savePlanToStorage() {
+  localStorage.setItem("icameal_plan_v2", JSON.stringify(currentPlan));
+  localStorage.setItem("icameal_budget_v2", getBudgetLimit().toString());
+  showToast("Jadwal menu berhasil disimpan ke memori browser.");
+}
+
+function loadPlanFromStorage() {
+  const savedPlan = localStorage.getItem("icameal_plan_v2");
+  if (savedPlan) {
+    try {
+      currentPlan = JSON.parse(savedPlan);
+    } catch (e) {
+      currentPlan = {};
+    }
+  }
+  const savedBudget = localStorage.getItem("icameal_budget_v2");
+  if (savedBudget) {
+    document.getElementById("budgetInput").value = savedBudget;
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("toastBox");
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
+}
+
+// ═══════════════════════════════════════════════
+// INISIALISASI
+// ═══════════════════════════════════════════════
+window.addEventListener("DOMContentLoaded", () => {
+  loadPlanFromStorage();
+  renderPlanTable();
+  renderRecipeCatalog();
+  updateBudgetMetrics();
+});
+</script>
+</body>
+</html>
