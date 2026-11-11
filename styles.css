@@ -120,3 +120,21 @@
  .monthly-plan-locked{align-items:flex-start;flex-direction:column}
  .recipe-grid.expanded{grid-template-columns:1fr}
 }
+
+/* IcaMeal motion: subtle ambient atmosphere and hero entrance */
+.hero{isolation:isolate;overflow:hidden}
+.hero-copy,.hero-footnote{position:relative;z-index:2}
+.hero-ambient{position:absolute;z-index:0;pointer-events:none;border-radius:50%;will-change:transform}
+.hero-ambient-one{width:clamp(220px,32vw,430px);height:clamp(220px,32vw,430px);right:5%;top:8%;background:radial-gradient(circle,rgba(231,166,77,.19) 0%,rgba(231,166,77,.08) 48%,transparent 72%);filter:blur(5px);animation:ambient-drift 13s ease-in-out infinite alternate}
+.hero-ambient-two{width:clamp(160px,22vw,290px);height:clamp(160px,22vw,290px);right:27%;bottom:2%;background:radial-gradient(circle,rgba(214,95,64,.13) 0%,rgba(214,95,64,.05) 52%,transparent 72%);filter:blur(8px);animation:ambient-drift 17s ease-in-out infinite alternate-reverse}
+.hero-copy>*{animation:hero-enter .75s cubic-bezier(.2,.7,.2,1) both}
+.hero-copy>.eyebrow{animation-delay:.08s}.hero-copy>h1{animation-delay:.18s}.hero-copy>p{animation-delay:.3s}.hero-copy>.hero-actions{animation-delay:.42s}.hero-copy>.hero-stats{animation-delay:.54s}
+.hero-footnote{animation:hero-enter .8s .58s cubic-bezier(.2,.7,.2,1) both}
+@keyframes hero-enter{from{opacity:0;transform:translate3d(0,22px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes ambient-drift{from{translate:0 -8px;scale:.98}to{translate:12px 16px;scale:1.04}}
+.shopping-group{padding:12px 0 5px;border-top:1px solid var(--line)}.shopping-group:first-child{border-top:0;padding-top:0}
+.shopping-group h4{margin:0 0 7px;color:var(--terracotta);font-size:10px;letter-spacing:1.2px;text-transform:uppercase}
+.shopping-item{transition:background .2s ease,opacity .2s ease}.shopping-item input{accent-color:var(--forest)}.shopping-item.checked span{text-decoration:line-through;color:var(--muted)}.shopping-item small{white-space:nowrap}
+.shopping-progress .progress-track i{transition:width .35s cubic-bezier(.2,.7,.2,1)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero-copy>*,.hero-footnote,.hero-ambient{animation:none!important;transition:none!important}.hero-copy>*{opacity:1;transform:none}.shopping-progress .progress-track i{transition:none}}
+@media(max-width:700px){.hero-ambient-one{right:-18%;top:12%}.hero-ambient-two{right:28%;bottom:0}}
