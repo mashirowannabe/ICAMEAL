@@ -162,3 +162,39 @@
 @media(max-width:900px){.shopping-section{grid-template-columns:1fr;gap:30px}.shopping-group{grid-template-columns:90px minmax(0,1fr)}}
 @media(max-width:600px){.hero-copy>p{font-size:15px}.hero-copy>.eyebrow{font-size:10px}.hero-actions{align-items:flex-start;flex-direction:column;gap:17px}.hero-actions .button{font-size:13px}.shopping-section{padding:58px 6%}.shopping-list{padding:16px}.shopping-group{grid-template-columns:1fr;gap:5px}.shopping-group h4{padding-top:3px}.shopping-item{flex-basis:145px}}
 @media(prefers-reduced-motion:reduce){.hero-ambient-one,.hero-ambient-two{transform:none!important}}
+
+/* Hero editorial motion: floating food photography and warm ambient color */
+.hero{isolation:isolate;overflow:hidden;grid-template-columns:minmax(0,1fr) minmax(390px,.92fr);gap:3%;background:linear-gradient(118deg,#f7f3eb 0%,#f7f1e6 42%,#f4e8d8 100%);background-size:180% 180%;animation:none}
+.hero-copy{position:relative;z-index:3}
+.hero-motion-stage{position:relative;z-index:2;height:480px;min-width:0;isolation:isolate;perspective:1000px}
+.hero-orbit{position:absolute;border:1px solid rgba(214,95,64,.22);border-radius:50%;pointer-events:none}
+.hero-orbit-one{width:88%;aspect-ratio:1;right:2%;top:3%;transform:rotate(-18deg)}
+.hero-orbit-two{width:66%;aspect-ratio:1;right:13%;top:16%;border-color:rgba(231,166,77,.34);transform:rotate(24deg)}
+.hero-food-card{position:absolute;margin:0;overflow:hidden;background:var(--paper);box-shadow:0 22px 60px rgba(32,56,43,.14);border:7px solid rgba(255,253,248,.88);will-change:translate,rotate}
+.hero-food-card img{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .65s ease,filter .65s ease}
+.hero-food-card img.is-changing{opacity:.08;filter:blur(4px)}
+.hero-food-main{width:68%;height:74%;right:12%;top:10%;rotate:3deg;animation:food-float-main 8s ease-in-out infinite}
+.hero-food-main figcaption{position:absolute;left:0;right:0;bottom:0;padding:38px 16px 14px;color:#fff;background:linear-gradient(transparent,rgba(20,42,29,.82));display:flex;flex-direction:column;gap:5px}
+.hero-food-main figcaption span{font-size:8px;letter-spacing:1.3px;font-weight:800}
+.hero-food-main figcaption b{font:500 23px var(--serif)}
+.hero-food-small{width:34%;height:30%;border-width:5px}
+.hero-food-small img{height:100%}
+.hero-food-small figcaption{position:absolute;bottom:0;left:0;right:0;padding:20px 8px 7px;background:linear-gradient(transparent,rgba(20,42,29,.72));color:white;font-size:7px;letter-spacing:1px;font-weight:800}
+.hero-food-top{left:1%;top:17%;rotate:-8deg;animation:food-float-top 7s ease-in-out infinite}
+.hero-food-bottom{right:1%;bottom:5%;rotate:7deg;animation:food-float-bottom 9s ease-in-out infinite}
+.hero-motion-stamp{position:absolute;z-index:4;right:4%;top:2%;width:86px;height:86px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--gold);color:var(--forest);font:28px var(--serif);box-shadow:0 10px 30px #273a2a22;animation:stamp-turn 24s linear infinite}
+.hero-motion-stamp small{font:800 7px/1.35 var(--sans);letter-spacing:1px;text-align:center}
+.hero-ambient-one{background:radial-gradient(circle,rgba(231,166,77,.42) 0%,rgba(231,166,77,.19) 42%,transparent 72%);filter:blur(4px);animation-duration:8s}
+.hero-ambient-two{background:radial-gradient(circle,rgba(214,95,64,.27) 0%,rgba(130,155,119,.13) 48%,transparent 74%);filter:blur(7px);animation-duration:11s}
+.hero-ambient-one,.hero-ambient-two{transform:none;translate:0 calc(var(--hero-scroll,0px) * -1)}
+.hero-motion-stage{translate:0 calc(var(--hero-scroll,0px) * -.65)}
+
+@keyframes food-float-main{0%,100%{translate:0 0;rotate:3deg}50%{translate:0 -13px;rotate:1deg}}
+@keyframes food-float-top{0%,100%{translate:0 0}50%{translate:0 12px}}
+@keyframes food-float-bottom{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@keyframes stamp-turn{to{rotate:360deg}}
+@media(max-width:1000px){.hero{grid-template-columns:minmax(0,1fr) minmax(300px,.85fr)}.hero-motion-stage{height:410px}}
+@media(max-width:700px){.hero{display:flex;flex-direction:column;align-items:stretch;gap:25px}.hero-motion-stage{height:330px;width:100%;margin:0 auto}.hero-food-main{width:64%;height:76%;right:15%;top:8%}.hero-food-small{width:32%;height:30%}.hero-motion-stamp{width:68px;height:68px;font-size:22px;right:2%;top:0}.hero-motion-stamp small{font-size:6px}.hero-food-main figcaption b{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.hero{animation:none}.hero-food-main,.hero-food-top,.hero-food-bottom,.hero-motion-stamp{animation:none}.hero-food-card img{transition:none}}
+
+@media(prefers-reduced-motion:reduce){.hero-ambient-one,.hero-ambient-two,.hero-motion-stage{translate:none!important}}
