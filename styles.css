@@ -222,3 +222,5 @@
 .monthly-meal-offer{border-color:rgba(214,95,64,.35);background:#f8f0e7}
 @media(max-width:700px){.recipe-row{grid-template-columns:28px minmax(0,1fr) 22px;gap:9px;padding:17px 2px}.recipe-row-meta,.recipe-row-price{display:none}.recipe-row-title{font-size:23px}.recipe-hover-preview{display:none}}
 @media(prefers-reduced-motion:reduce){.recipe-row,.recipe-row-arrow,.recipe-hover-preview{transition:none}}
+
+.recipe-row-locked{color:#8c9188;background:rgba(233,226,214,.35)}.recipe-row-locked .recipe-row-title{color:#8c9188;font-style:italic}.recipe-row-locked .recipe-row-index,.recipe-row-locked .recipe-row-meta,.recipe-row-locked .recipe-row-price{color:#9a9d91}.recipe-row-locked:hover{padding-left:4px;color:var(--forest)}.recipe-row-locked .recipe-row-arrow{font-size:12px}
