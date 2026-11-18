@@ -5,19 +5,103 @@
 <main id="top">
 <section class="hero hero-uchiba" aria-label="IcaMeal">
   <div class="hero-wordmark-wrap">
-    <h1 class="hero-wordmark" aria-label="IcaMeal"><span aria-hidden="true">i</span><span aria-hidden="true">c</span><span aria-hidden="true">a</span><span aria-hidden="true">m</span><span aria-hidden="true">e</span><span aria-hidden="true">a</span><span aria-hidden="true">l</span></h1>
+    <h1 class="hero-wordmark">icameal</h1>
   </div>
   <div class="hero-artwork-wrap">
-    <div class="hero-photo-stage" aria-label="Pilihan menu IcaMeal">
-      <div class="hero-photo-image recipe-photo" data-hero-food="0" role="img" aria-label="Foto hidangan IcaMeal"></div>
+    <div class="hero-photo-stage" aria-label="Ayam kecap, pilihan menu IcaMeal">
+      <div class="hero-photo-image recipe-photo" data-hero-food="fixed" role="img" aria-label="Foto Ayam Kecap"></div>
     </div>
     <div class="hero-pattern-band" aria-hidden="true"></div>
   </div>
 </section>
 <div class="manifesto"><span>✳</span><p>Hidup sendiri bukan berarti harus makan asal-asalan.</p><span>✳</span></div>
-<section class="section budget-section" id="budget"><div class="section-heading"><div><span class="section-kicker">01 — SET YOUR PLAN</span><h2>Mulai dari <em>anggaranmu.</em></h2><p>Tentukan budget dan gaya makan. Kami bantu susun minggu yang lebih terencana.</p></div><span class="step-note">LANGKAH 1 / 2</span></div><div class="budget-layout"><div class="budget-controls"><label class="field-label" for="budgetInput">Anggaran makan mingguan</label><div class="budget-number"><span>Rp</span><input id="budgetInput" type="number" min="50000" max="500000" step="5000" value="120000"></div><input class="range" id="budgetRange" type="range" min="50000" max="500000" step="5000" value="120000" aria-label="Geser anggaran mingguan"><div class="range-labels"><span>Rp50 ribu</span><span>Rp500 ribu</span></div><div class="presets"><button data-budget="75000">75 rb</button><button data-budget="100000">100 rb</button><button data-budget="150000">150 rb</button><button data-budget="250000">250 rb</button></div><div class="field-label diet-label">Pilih gaya makan</div><div class="diet-options" role="group" aria-label="Filter gaya makan"><button class="diet-chip active" data-diet="all">Semua</button><button class="diet-chip" data-diet="vegan">Vegan</button><button class="diet-chip" data-diet="protein">Tinggi protein</button><button class="diet-chip" data-diet="hemat">Super hemat</button></div><div class="budget-foot"><span>✳</span><p>Anggaran dan preferensi bisa kamu ubah kapan saja. Menu rekomendasi akan menyesuaikan.</p></div></div><aside class="budget-summary"><span class="summary-label">ESTIMASI MINGGU INI</span><div class="summary-price" id="estimatedCost">Rp77.500</div><div class="budget-meter"><span id="budgetMeter"></span></div><div class="summary-row"><span>Anggaran tersedia</span><b id="budgetAvailable">Rp120.000</b></div><div class="summary-row"><span>Perkiraan sisa</span><b id="budgetRemaining">Rp42.500</b></div><div class="summary-status" id="budgetStatus">✓ Masih dalam anggaran</div><a class="button button-light" href="#planner">Lihat menu mingguan ↘</a></aside></div></section>
+<section class="budget-section" id="budget">
+  <div class="budget-frame">
+    <div class="budget-frame-intro">
+      <span class="section-kicker">01 — SET YOUR PLAN</span>
+      <h2>Mulai dari <em>anggaranmu.</em></h2>
+      <p>Tentukan batas belanja dan gaya makanmu. IcaMeal akan bantu menyusun menu yang realistis untuk satu minggu.</p>
+      <div class="budget-frame-note"><b>01</b><span>WEEKLY FOOD BUDGET<br>START WITH WHAT YOU HAVE</span></div>
+    </div>
+    <div class="budget-frame-main">
+      <div class="budget-controls">
+        <label class="field-label" for="budgetInput">Anggaran makan mingguan</label>
+        <div class="budget-number"><span>Rp</span><input id="budgetInput" type="number" min="50000" max="500000" step="5000" value="120000"></div>
+        <input class="range" id="budgetRange" type="range" min="50000" max="500000" step="5000" value="120000" aria-label="Geser anggaran mingguan">
+        <div class="range-labels"><span>Rp50 ribu</span><span>Rp500 ribu</span></div>
+        <div class="presets"><button data-budget="75000">75 rb</button><button data-budget="100000">100 rb</button><button data-budget="150000">150 rb</button><button data-budget="250000">250 rb</button></div>
+        <div class="field-label diet-label">Pilih gaya makan</div>
+        <div class="diet-options" role="group" aria-label="Filter gaya makan">
+          <button class="diet-chip active" data-diet="all">Semua</button>
+          <button class="diet-chip" data-diet="vegan">Vegan</button>
+          <button class="diet-chip" data-diet="protein">Tinggi protein</button>
+          <button class="diet-chip" data-diet="hemat">Super hemat</button>
+        </div>
+        <div class="budget-foot"><span>✳</span><p>Anggaran dan preferensi bisa kamu ubah kapan saja. Menu rekomendasi akan menyesuaikan.</p></div>
+      </div>
+      <aside class="budget-summary">
+        <span class="summary-label">ESTIMASI MINGGU INI</span>
+        <div class="summary-price" id="estimatedCost">Rp77.500</div>
+        <div class="budget-meter"><span id="budgetMeter"></span></div>
+        <div class="summary-row"><span>Anggaran tersedia</span><b id="budgetAvailable">Rp120.000</b></div>
+        <div class="summary-row"><span>Perkiraan sisa</span><b id="budgetRemaining">Rp42.500</b></div>
+        <div class="summary-status" id="budgetStatus">✓ Masih dalam anggaran</div>
+        <a class="button button-light" href="#planner">Lihat menu mingguan ↘</a>
+      </aside>
+    </div>
+  </div>
+</section>
 <section class="section planner-section" id="planner"><div class="section-heading"><div><span class="section-kicker">02 — YOUR WEEK, SORTED</span><h2>Seminggu <em>lebih terencana.</em></h2><p>Pilih hari untuk melihat menu dan rincian nutrisi. Buka meal plan bulanan untuk menyusun menu hingga 30 hari.</p></div><div class="planner-heading-actions"><button class="text-link" id="regeneratePlan">ATUR ULANG MENU ↻</button><button class="button button-dark" id="showMonthlyPlan">LIHAT MEAL PLAN BULANAN ↗</button></div></div><div class="planner-layout"><div><div class="week-grid" id="weekGrid"></div><div class="monthly-calendar-wrap hidden" id="monthlyCalendarWrap"><div class="calendar-heading"><div><span class="section-kicker">YOUR MONTH, SORTED</span><h3 id="calendarMonthTitle">Meal plan bulanan</h3><p>30 hari ide menu, tersusun seperti kalender.</p></div><button class="text-link" id="showWeeklyPlan">KEMBALI KE MINGGUAN ↗</button></div><div class="monthly-calendar" id="monthlyCalendar"></div><div class="monthly-plan-locked hidden" id="monthlyPlanLocked"><b>Buka rencana makan 30 hari.</b><span>Meal Plan Bulanan membuka kalender 30 hari sekaligus seluruh rencana makan mingguan.</span><button class="button button-gold" data-monthly-purchase>AKSES MEAL PLAN BULANAN ↗</button></div></div></div><aside class="meal-detail" id="mealDetail"><div class="detail-image"><div id="detailImage" class="recipe-photo" role="img" aria-label="Foto menu terpilih"></div><span id="detailDay">SENIN · 11 NOV</span></div><div class="detail-body"><span class="detail-kicker">MENU PILIHAN</span><h3 id="detailTitle">Nasi ayam kemangi</h3><p id="detailDescription">Menu sederhana dengan bahan yang mudah ditemukan.</p><div class="macro-grid"><div><b id="macroCalories">520</b><span>KKAL</span></div><div><b id="macroProtein">32g</b><span>PROTEIN</span></div><div><b id="macroCarbs">58g</b><span>KARBO</span></div><div><b id="macroFat">16g</b><span>LEMAK</span></div></div><div class="detail-bottom"><b id="detailPrice">Rp12.500</b><button id="detailRecipe" class="text-link">DETAIL MENU ↗</button></div></div></aside></div><div class="vip-inline" id="weeklyLockedNotice"><span>✳</span><p><b>Empat hari menu masih terkunci.</b> Gabung The Good Food Club atau beli Meal Plan Bulanan untuk membuka seluruh rencana mingguan.</p><button class="text-link" data-subscribe>BUKA SEMUA MENU ↗</button></div></section><section class="section recipes-section" id="recipes"><div class="section-heading"><div><span class="section-kicker">03 — FROM OUR LITTLE KITCHEN</span><h2>Enak itu <em>gak ribet.</em></h2><p>Inspirasi masakan dengan bahan sederhana dan harga bersahabat.</p></div><button class="text-link" id="toggleAllRecipes">LIHAT SEMUA RESEP ↗</button></div><div class="recipe-grid" id="recipeGrid"></div><div class="recipe-hover-preview" id="recipeHoverPreview" aria-hidden="true"><div id="recipeHoverImage" class="recipe-photo" role="img" aria-label="Preview resep"></div><span id="recipeHoverLabel"></span></div></section><section class="shopping-section" id="shopping"><div class="shopping-copy"><span class="section-kicker">04 — READY, SET, SHOP</span><h2>Belanja sekali.<br><em>Makan berkali-kali.</em></h2><p>Daftar bahan dari menu mingguan, terkumpul rapi di satu tempat.</p><div class="shopping-progress"><b id="shoppingCount">0/0</b><span>BAHAN SUDAH DIBELI</span><div class="progress-track"><i id="shoppingProgress"></i></div></div></div><div class="shopping-list"><div class="shopping-list-head"><b>DAFTAR BELANJA MINGGU INI</b><span id="shoppingRemaining">MEMUAT BAHAN</span></div><div id="shoppingItems"></div><button class="shopping-copy-button" id="copyShopping">SALIN DAFTAR BELANJA ↗</button></div></section>
-<section class="membership" id="membership"><div class="membership-art"><span class="membership-spark">✳</span><b>THE<br>GOOD<br>FOOD<br>CLUB.</b><small>MAKE EVERY MEAL COUNT.</small></div><div class="membership-copy"><span class="section-kicker">05 — A LITTLE EXTRA FOR YOU</span><h2>Lebih banyak<br><em>rasa, lebih bebas.</em></h2><p>Buka tujuh hari penuh menu, akses informasi nutrisi, simpan resep favorit, dan dapatkan rekomendasi makan yang lebih personal.</p><ul><li>7 hari menu mingguan</li><li>Kalori dan makro nutrisi lengkap</li><li>Akses semua resep dan daftar belanja</li><li>Rekomendasi sesuai budget dan preferensi</li></ul><div class="membership-prices"><button class="price-card selected" data-plan="monthly"><small>BULANAN</small><b>Rp25.000</b><span>/ bulan</span></button></div><button class="button button-dark" data-subscribe>GABUNG THE GOOD FOOD CLUB ↗</button></div></section>
+<section class="membership" id="membership">
+  <div class="membership-inner">
+    <div class="membership-heading">
+      <span class="section-kicker">05 — A LITTLE EXTRA FOR YOU</span>
+      <h2>Pilih paket yang <em>pas buatmu.</em></h2>
+      <p>Mulai dari akses mingguan, kalender makan sebulan, atau koleksi resep yang bisa kamu simpan.</p>
+    </div>
+    <div class="membership-package-grid">
+      <article class="package-card package-card-featured">
+        <span class="package-eyebrow">MEMBERSHIP · 30 HARI</span>
+        <h3>The Good Food Club</h3>
+        <p>Buka semua menu mingguan dan pengalaman makan yang lebih personal.</p>
+        <ul>
+          <li>7 hari menu mingguan terbuka</li>
+          <li>Informasi kalori dan makro nutrisi</li>
+          <li>Filter budget dan preferensi makan</li>
+          <li>Daftar belanja mingguan</li>
+        </ul>
+        <div class="package-price"><b>Rp25.000</b><span>/ bulan</span></div>
+        <button class="button package-button" type="button" data-package-buy="good_food_club_monthly">GABUNG THE GOOD FOOD CLUB ↗</button>
+      </article>
+      <article class="package-card">
+        <span class="package-eyebrow">SEKALI BELI · 30 HARI</span>
+        <h3>Meal Plan Bulanan</h3>
+        <p>Rencana makan untuk satu bulan, tanpa perlu menebak menu setiap hari.</p>
+        <ul>
+          <li>Kalender menu 30 hari</li>
+          <li>Seluruh 7 hari meal plan mingguan terbuka</li>
+          <li>Detail bahan dan cara memasak</li>
+          <li>Terpisah dari katalog resep premium</li>
+        </ul>
+        <div class="package-price"><b>Rp10.000</b><span>/ sekali beli</span></div>
+        <button class="button package-button package-button-light" type="button" data-package-buy="meal_plan_30_days">BELI MEAL PLAN ↗</button>
+      </article>
+      <article class="package-card">
+        <span class="package-eyebrow">SEKALI BELI · AKSES RESEP</span>
+        <h3>Recipe Book</h3>
+        <p>Koleksi resep anak kos yang praktis, hemat, dan mudah diikuti.</p>
+        <ul>
+          <li>30 resep pilihan</li>
+          <li>Akses resep premium</li>
+          <li>Daftar bahan dan langkah memasak</li>
+          <li>Sekali beli, tanpa langganan</li>
+        </ul>
+        <div class="package-price"><b>Rp15.000</b><span>/ sekali beli</span></div>
+        <button class="button package-button package-button-light" type="button" data-package-buy="recipe_book_30">BELI RECIPE BOOK ↗</button>
+      </article>
+    </div>
+  </div>
+</section>
 </main>
 <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark">i.</span><span>icameal<sup>®</sup></span></a><p>GOOD FOOD SHOULD FEEL GOOD.<br>EVEN ON A STUDENT BUDGET.</p><span>© ICAMEAL 2026</span><a href="#top">BACK TO TOP ↑</a></footer>
 <div class="modal-backdrop hidden" id="authModal"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle"><button class="modal-close" data-close="authModal" aria-label="Tutup">×</button><span class="section-kicker">WELCOME TO THE GOOD FOOD CLUB</span><h2 id="authTitle">Senang melihatmu lagi.</h2><p id="authIntro">Masuk dan lanjutkan rencana makanmu.</p><form id="authForm"><label id="nameField" class="hidden">Nama lengkap<input id="authName" autocomplete="name" placeholder="Nama kamu"></label><label>Email<input id="authEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></label><label>Password<input id="authPassword" type="password" minlength="8" autocomplete="current-password" placeholder="Minimal 8 karakter" required></label><button class="button button-dark modal-submit" id="authSubmit">MASUK KE ICAMEAL ↗</button></form><div class="modal-switch" id="authSwitch">Belum punya akun? <button data-auth-switch>Daftar sekarang</button></div><small class="demo-note">SUPABASE AUTH · DATA AKUN TERSIMPAN DI DATABASE</small></section></div>
