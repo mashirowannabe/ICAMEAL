@@ -309,3 +309,10 @@
 /* Single-plan layout after removing the annual membership option. */
 #membership .membership-prices,
 #subscriptionModal .membership-prices{grid-template-columns:minmax(0,1fr)}
+
+
+/* Optical alignment: wordmark only. */
+.hero.hero-editorial .hero-wordmark{transform:translateX(-14px)}
+@media(max-width:700px){
+  .hero.hero-editorial .hero-wordmark{transform:translateX(-7px)}
+}
