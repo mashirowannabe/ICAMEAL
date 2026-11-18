@@ -116,7 +116,7 @@ function filteredMeals() {
 function getWeeklyRecipePool(diet = state.diet) {
   const available = state.recipes.filter((recipe) =>
     (diet === "all" || (recipe.tags || []).includes(diet)) &&
-    (state.isVip || recipe.access_tier === "free") &&
+    (state.isVip || state.monthlyPlanPurchased || recipe.access_tier === "free") &&
     Number.isFinite(Number(recipe.estimated_cost_idr))
   );
   if (!available.length) {
@@ -222,6 +222,10 @@ function syncEntitlementFlags() {
   state.monthlyPlanPurchased = hasActiveEntitlement("monthly_meal_plan");
 }
 
+function canAccessWeeklyPlan() {
+  return state.isVip || state.monthlyPlanPurchased;
+}
+
 function renderBudget() {
   const summary = getBudgetSummary();
   $("budgetInput").value = state.budget;
@@ -244,7 +248,7 @@ function renderPlanner() {
   const list = filteredMeals();
   $("weekGrid").innerHTML = list.map((meal) => {
     const index = meals.indexOf(meal);
-    const locked = index >= 3 && !state.isVip;
+    const locked = index >= 3 && !canAccessWeeklyPlan();
     return '<button class="day-card ' + (index === state.selectedDay ? "selected " : "") + (locked ? "locked" : "") + '" data-day="' + index + '">' +
       '<div class="day-top"><span>' + escapeHtml(meal.day) + '</span><b>' + escapeHtml(meal.date) + '</b></div>' +
       '<div class="recipe-photo day-card-image" data-meal-photo="' + escapeHtml(meal.id) + '"></div>' +
@@ -261,7 +265,7 @@ function renderPlanner() {
     const recipe = state.recipes.find((item) => item.id === photo.dataset.mealPhoto);
     if (recipe) applyRecipePhoto(photo, recipe);
   });
-  $("weeklyLockedNotice").classList.toggle("hidden", state.isVip);
+  $("weeklyLockedNotice").classList.toggle("hidden", canAccessWeeklyPlan());
 }
 
 function showMealDetail(meal, dayCaption, fromMonthly) {
@@ -281,38 +285,38 @@ function showMealDetail(meal, dayCaption, fromMonthly) {
 function selectDay(index) {
   const meal = meals[index];
   if (!meal) return;
-  if (index >= 3 && !state.isVip) {
+  if (index >= 3 && !canAccessWeeklyPlan()) {
     openModal("subscriptionModal");
     return;
   }
   state.selectedDay = index;
   renderPlanner();
   const month = dateLabel(meal.planned_on, { month: "short" }).toUpperCase();
-  showMealDetail(meal, meal.day + " · " + meal.date + " " + month, false);
+  showMealDetail(meal, meal.day + " · " + meal.date + " " + month, state.monthlyPlanPurchased);
 }
 
 function initHeroMotion() {
-  const stage = document.querySelector(".hero-motion-stage");
-  if (!stage || !state.recipes.length) return;
-  const cards = [...stage.querySelectorAll("[data-hero-food]")];
+  const stage = document.querySelector(".hero-photo-stage");
+  const image = stage && stage.querySelector("[data-hero-food]");
+  if (!stage || !image || !state.recipes.length) return;
 
+  let currentIndex = 0;
   const paint = () => {
-    cards.forEach((img, index) => {
-      const recipe = state.recipes[(heroCursor + index * 2) % state.recipes.length];
-      img.classList.add("is-changing");
-      window.setTimeout(() => {
-        applyRecipePhoto(img, recipe);
-        img.classList.remove("is-changing");
-      }, 180);
-    });
-    $("heroFoodCaption").textContent = state.recipes[heroCursor % state.recipes.length].title;
-    heroCursor = (heroCursor + 1) % state.recipes.length;
+    const recipe = state.recipes[currentIndex % state.recipes.length];
+    if (!recipe) return;
+    image.classList.add("is-changing");
+    window.setTimeout(() => {
+      applyRecipePhoto(image, recipe);
+      image.classList.remove("is-changing");
+    }, 240);
+    currentIndex = (currentIndex + 1) % state.recipes.length;
   };
 
   paint();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const start = () => {
-    if (heroTimer || document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    heroTimer = window.setInterval(paint, 4600);
+    if (heroTimer || document.hidden || reducedMotion.matches) return;
+    heroTimer = window.setInterval(paint, 7200);
   };
   const stop = () => {
     if (heroTimer) {
@@ -327,6 +331,7 @@ function initHeroMotion() {
   }, { threshold: 0.12 });
   heroObserver.observe(stage);
   document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
+  reducedMotion.addEventListener?.("change", () => reducedMotion.matches ? stop() : start());
 }
 
 function renderRecipes() {
@@ -709,10 +714,6 @@ async function loadProducts() {
   document.querySelectorAll('[data-plan="monthly"] b').forEach((label) => {
     if (priceText("good_food_club_monthly")) label.textContent = priceText("good_food_club_monthly");
   });
-  document.querySelectorAll('[data-plan="yearly"] b').forEach((label) => {
-    if (priceText("good_food_club_yearly")) label.textContent = priceText("good_food_club_yearly");
-  });
-
   const recipeBookOffer = $("buyRecipeBook")?.closest(".single-recipe-offer");
   if (recipeBookOffer && priceText("recipe_book_30")) recipeBookOffer.querySelector(".single-recipe-bottom b").innerHTML = priceText("recipe_book_30") + ' <small>/ sekali beli</small>';
   const monthlyOffer = $("buyMonthlyPlanFromOffers")?.closest(".single-recipe-offer");
@@ -928,7 +929,7 @@ async function loadUserData(user) {
   renderPlanner();
   renderRecipes();
   renderMonthlyCalendar();
-  $("weeklyLockedNotice").classList.toggle("hidden", state.isVip);
+  $("weeklyLockedNotice").classList.toggle("hidden", canAccessWeeklyPlan());
   if (meals.length) selectDay(Math.min(state.selectedDay, meals.length - 1));
 }
 
@@ -1328,7 +1329,7 @@ function bindEvents() {
   });
 
   $("authForm").addEventListener("submit", submitAuth);
-  $("activateMembership").onclick = () => purchaseProduct(state.plan === "yearly" ? "good_food_club_yearly" : "good_food_club_monthly");
+  $("activateMembership").onclick = () => purchaseProduct("good_food_club_monthly");
   $("buyRecipeBook").onclick = () => purchaseProduct("recipe_book_30");
   $("buyMonthlyPlan").onclick = () => purchaseProduct("meal_plan_30_days");
   $("buyMonthlyPlanFromOffers").onclick = () => purchaseProduct("meal_plan_30_days");
