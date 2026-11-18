@@ -7,12 +7,12 @@ update public.recipes
 set cover_image_url='https://upload.wikimedia.org/wikipedia/commons/b/bd/Ayam_Kecap_1.jpg',
     image_tile=null,
     image_source_url='https://commons.wikimedia.org/wiki/File:Ayam_Kecap_1.jpg',
-    image_credit='Gunawan Kartapranata — CC BY-SA 4.0'
+    image_credit='Tamba Budiarsana — Pexels Free License'
 where slug='ayam-kecap';
 update public.recipes
-set cover_image_url='https://upload.wikimedia.org/wikipedia/commons/d/dc/Sayur_Lodeh_Ibu_Sulastri.jpg',
+set cover_image_url='https://images.pexels.com/photos/37106989/pexels-photo-37106989.jpeg?auto=compress&cs=tinysrgb&w=1200',
     image_tile=null,
-    image_source_url='https://commons.wikimedia.org/wiki/File:Sayur_Lodeh_Ibu_Sulastri.jpg',
+    image_source_url='https://www.pexels.com/photo/authentic-indonesian-sayur-lodeh-in-bali-37106989/',
     image_credit='Gunawan Kartapranata — CC BY-SA 4.0'
 where slug='sayur-lodeh';
 update public.recipes
