@@ -932,7 +932,6 @@ async function submitAuth(event) {
     const errorMessage = String(error?.message || "");
     const emailRateLimited =
       errorCode === "over_email_send_rate_limit" ||
-      errorCode === "over_email_send_rate_limit" ||
       /email rate limit exceeded/i.test(errorMessage);
 
     if (state.authMode === "register" && emailRateLimited) {
