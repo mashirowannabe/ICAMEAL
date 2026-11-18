@@ -1,35 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="240" viewBox="0 0 360 240" fill="none">
-  <g stroke="#20382b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".96">
-    <path d="M-25 215C36 183 48 135 84 102S143 63 168 6"/>
-    <path d="M82 104C111 111 126 131 135 157M110 75C83 67 66 49 61 25M137 49C165 52 185 70 193 94M55 149C31 140 13 121 9 99"/>
-    <path d="M180 246C212 193 218 151 249 122S309 80 377 45"/>
-    <path d="M244 128C219 119 201 99 199 75M278 103C305 110 321 129 326 151M220 185C194 184 174 169 164 147M319 74C322 47 339 29 359 19"/>
-    <path d="M-20 34C20 56 49 82 69 115M292 237C291 205 309 183 344 166"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="180" viewBox="0 0 480 180" fill="none">
+  <g stroke="#20382b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 164C63 137 84 111 112 77C128 58 145 39 168 22"/>
+    <path d="M282 166C312 139 340 112 364 83C385 58 405 38 442 18"/>
+    <path d="M112 77C95 72 81 60 77 43"/>
+    <path d="M128 59C146 62 158 73 165 89"/>
+    <path d="M84 108C65 105 51 95 45 79"/>
+    <path d="M98 91C114 96 123 108 125 124"/>
+    <path d="M364 83C345 78 332 65 329 48"/>
+    <path d="M383 61C401 65 413 77 418 94"/>
+    <path d="M337 112C320 108 306 97 301 81"/>
+    <path d="M350 96C367 101 377 113 378 129"/>
   </g>
   <g fill="#20382b">
-    <path d="M61 25C37 14 27 1 31-17C55-10 71 2 75 22C70 25 66 26 61 25Z"/>
-    <path d="M9 99C-15 93-27 78-28 57C-5 57 12 68 20 88C17 94 13 98 9 99Z"/>
-    <path d="M135 157C117 143 110 125 119 106C140 117 151 133 149 154C144 157 139 158 135 157Z"/>
-    <path d="M193 94C190 70 198 52 217 43C224 66 219 85 202 99C198 98 195 96 193 94Z"/>
-    <path d="M199 75C178 61 170 43 178 23C199 35 209 52 207 72C204 74 201 75 199 75Z"/>
-    <path d="M326 151C305 139 295 121 301 101C324 112 336 128 334 148C331 150 328 151 326 151Z"/>
-    <path d="M164 147C140 140 127 124 129 103C153 108 169 122 172 142C169 145 166 147 164 147Z"/>
-    <path d="M359 19C340 8 333-9 340-28C360-17 371-2 367 17C364 18 361 19 359 19Z"/>
-    <path d="M344 166C322 166 306 154 300 134C323 129 342 137 351 155C349 160 347 164 344 166Z"/>
-    <path d="M69 115C48 106 37 88 41 68C63 75 77 90 78 110C75 113 72 115 69 115Z"/>
+    <path d="M77 43C55 42 43 31 42 12C64 14 79 23 84 39C82 41 80 43 77 43Z"/>
+    <path d="M165 89C145 82 136 68 141 51C160 57 171 70 172 85C170 87 167 89 165 89Z"/>
+    <path d="M45 79C24 72 15 58 18 41C38 46 50 58 52 74C49 76 47 78 45 79Z"/>
+    <path d="M125 124C106 115 99 100 106 84C125 92 135 106 133 121C130 123 127 124 125 124Z"/>
+    <path d="M329 48C309 45 298 32 300 14C320 18 332 29 334 44C332 46 331 47 329 48Z"/>
+    <path d="M418 94C397 88 388 74 393 57C413 63 424 76 425 90C423 92 420 94 418 94Z"/>
+    <path d="M301 81C281 75 271 61 276 44C296 50 307 63 308 77C306 79 303 81 301 81Z"/>
+    <path d="M378 129C358 120 351 105 359 89C378 97 388 111 386 126C383 128 380 129 378 129Z"/>
   </g>
-  <g fill="#20382b" stroke="#d4a16f" stroke-width="2.5">
-    <g transform="translate(91 184)">
-      <circle r="19"/><ellipse cy="-19" rx="8" ry="13"/><ellipse cy="19" rx="8" ry="13"/><ellipse cx="-19" rx="13" ry="8"/><ellipse cx="19" rx="13" ry="8"/><ellipse cx="-14" cy="-14" rx="8" ry="12" transform="rotate(-45 -14 -14)"/><ellipse cx="14" cy="-14" rx="8" ry="12" transform="rotate(45 14 -14)"/><ellipse cx="-14" cy="14" rx="8" ry="12" transform="rotate(45 -14 14)"/><ellipse cx="14" cy="14" rx="8" ry="12" transform="rotate(-45 14 14)"/><circle r="6" fill="#d4a16f" stroke="none"/>
-    </g>
-    <g transform="translate(278 31) scale(.78)">
-      <circle r="19"/><ellipse cy="-19" rx="8" ry="13"/><ellipse cy="19" rx="8" ry="13"/><ellipse cx="-19" rx="13" ry="8"/><ellipse cx="19" rx="13" ry="8"/><ellipse cx="-14" cy="-14" rx="8" ry="12" transform="rotate(-45 -14 -14)"/><ellipse cx="14" cy="-14" rx="8" ry="12" transform="rotate(45 14 -14)"/><ellipse cx="-14" cy="14" rx="8" ry="12" transform="rotate(45 -14 14)"/><ellipse cx="14" cy="14" rx="8" ry="12" transform="rotate(-45 14 14)"/><circle r="6" fill="#d4a16f" stroke="none"/>
-    </g>
-    <g transform="translate(25 219) scale(.54)">
-      <circle r="19"/><ellipse cy="-19" rx="8" ry="13"/><ellipse cy="19" rx="8" ry="13"/><ellipse cx="-19" rx="13" ry="8"/><ellipse cx="19" rx="13" ry="8"/><ellipse cx="-14" cy="-14" rx="8" ry="12" transform="rotate(-45 -14 -14)"/><ellipse cx="14" cy="-14" rx="8" ry="12" transform="rotate(45 14 -14)"/><ellipse cx="-14" cy="14" rx="8" ry="12" transform="rotate(45 -14 14)"/><ellipse cx="14" cy="14" rx="8" ry="12" transform="rotate(-45 14 14)"/><circle r="6" fill="#d4a16f" stroke="none"/>
-    </g>
-    <g transform="translate(345 215) scale(.58)">
-      <circle r="19"/><ellipse cy="-19" rx="8" ry="13"/><ellipse cy="19" rx="8" ry="13"/><ellipse cx="-19" rx="13" ry="8"/><ellipse cx="19" rx="13" ry="8"/><ellipse cx="-14" cy="-14" rx="8" ry="12" transform="rotate(-45 -14 -14)"/><ellipse cx="14" cy="-14" rx="8" ry="12" transform="rotate(45 14 -14)"/><ellipse cx="-14" cy="14" rx="8" ry="12" transform="rotate(-45 -14 14)"/><ellipse cx="14" cy="14" rx="8" ry="12" transform="rotate(45 14 14)"/><circle r="6" fill="#d4a16f" stroke="none"/>
-    </g>
+  <g transform="translate(226 110)" fill="#20382b">
+    <ellipse cy="-18" rx="7" ry="14"/><ellipse cy="18" rx="7" ry="14"/>
+    <ellipse cx="-18" rx="14" ry="7"/><ellipse cx="18" rx="14" ry="7"/>
+    <ellipse cx="-13" cy="-13" rx="7" ry="12" transform="rotate(-45 -13 -13)"/>
+    <ellipse cx="13" cy="-13" rx="7" ry="12" transform="rotate(45 13 -13)"/>
+    <ellipse cx="-13" cy="13" rx="7" ry="12" transform="rotate(45 -13 13)"/>
+    <ellipse cx="13" cy="13" rx="7" ry="12" transform="rotate(-45 13 13)"/>
+    <circle r="5" fill="#d4a16f"/>
+  </g>
+  <g transform="translate(460 146) scale(.58)" fill="#20382b">
+    <ellipse cy="-18" rx="7" ry="14"/><ellipse cy="18" rx="7" ry="14"/>
+    <ellipse cx="-18" rx="14" ry="7"/><ellipse cx="18" rx="14" ry="7"/>
+    <ellipse cx="-13" cy="-13" rx="7" ry="12" transform="rotate(-45 -13 -13)"/>
+    <ellipse cx="13" cy="-13" rx="7" ry="12" transform="rotate(45 13 -13)"/>
+    <ellipse cx="-13" cy="13" rx="7" ry="12" transform="rotate(45 -13 13)"/>
+    <ellipse cx="13" cy="13" rx="7" ry="12" transform="rotate(-45 13 13)"/>
+    <circle r="5" fill="#d4a16f"/>
   </g>
 </svg>
