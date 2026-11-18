@@ -80,7 +80,6 @@ function applyRecipePhoto(element, recipe) {
   if (!element || !recipe) return;
   const url = imageUrl(recipe.cover_image_url || recipe.image);
   element.classList.add("recipe-photo");
-  element.classList.remove("recipe-atlas-photo");
   element.style.backgroundImage = url ? 'url("' + url + '")' : "";
   element.style.backgroundRepeat = "no-repeat";
   element.style.backgroundPosition = "center";
