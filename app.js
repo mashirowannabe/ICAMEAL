@@ -36,9 +36,6 @@ const state = {
 
 let meals = [];
 let currentUserLoadId = null;
-let heroObserver = null;
-let heroTimer = null;
-let heroCursor = 0;
 
 function toast(message) {
   const el = $("toast");
@@ -295,43 +292,31 @@ function selectDay(index) {
   showMealDetail(meal, meal.day + " · " + meal.date + " " + month, state.monthlyPlanPurchased);
 }
 
+function fitHeroWordmark() {
+  const wrap = document.querySelector(".hero-wordmark-wrap");
+  const wordmark = wrap && wrap.querySelector(".hero-wordmark");
+  if (!wrap || !wordmark) return;
+
+  wordmark.style.transform = "scaleX(1)";
+  const naturalWidth = wordmark.getBoundingClientRect().width;
+  const availableWidth = wrap.clientWidth;
+  if (!naturalWidth || !availableWidth) return;
+  const scale = Math.min(1.4, Math.max(0.82, availableWidth / naturalWidth));
+  wordmark.style.transform = "scaleX(" + scale.toFixed(4) + ")";
+}
+
 function initHeroMotion() {
-  const stage = document.querySelector(".hero-photo-stage");
-  const image = stage && stage.querySelector("[data-hero-food]");
-  if (!stage || !image || !state.recipes.length) return;
+  const image = document.querySelector(".hero-photo-stage [data-hero-food]");
+  if (!image || !state.recipes.length) return;
 
-  let currentIndex = 0;
-  const paint = () => {
-    const recipe = state.recipes[currentIndex % state.recipes.length];
-    if (!recipe) return;
-    image.classList.add("is-changing");
-    window.setTimeout(() => {
-      applyRecipePhoto(image, recipe);
-      image.classList.remove("is-changing");
-    }, 240);
-    currentIndex = (currentIndex + 1) % state.recipes.length;
-  };
+  const heroRecipe = state.recipes.find((recipe) => recipe.slug === "ayam-kecap") || state.recipes[0];
+  applyRecipePhoto(image, heroRecipe);
+  fitHeroWordmark();
 
-  paint();
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const start = () => {
-    if (heroTimer || document.hidden || reducedMotion.matches) return;
-    heroTimer = window.setInterval(paint, 7200);
-  };
-  const stop = () => {
-    if (heroTimer) {
-      clearInterval(heroTimer);
-      heroTimer = null;
-    }
-  };
-
-  if (heroObserver) heroObserver.disconnect();
-  heroObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => entry.isIntersecting ? start() : stop());
-  }, { threshold: 0.12 });
-  heroObserver.observe(stage);
-  document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
-  reducedMotion.addEventListener?.("change", () => reducedMotion.matches ? stop() : start());
+  window.addEventListener("resize", fitHeroWordmark, { passive: true });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitHeroWordmark).catch(() => {});
+  }
 }
 
 function renderRecipes() {
@@ -1318,6 +1303,10 @@ function bindEvents() {
   });
   document.querySelectorAll("[data-subscribe]").forEach((button) => {
     button.addEventListener("click", () => openModal("subscriptionModal"));
+  });
+
+  document.querySelectorAll("[data-package-buy]").forEach((button) => {
+    button.addEventListener("click", () => purchaseProduct(button.dataset.packageBuy));
   });
   document.querySelectorAll("[data-plan]").forEach((button) => {
     button.addEventListener("click", () => {
