@@ -873,24 +873,26 @@ function updateHeader() {
 function openAuth(mode) {
   state.authMode = mode;
   $("nameField").classList.toggle("hidden", mode !== "register");
-  if (state.emailSignupRateLimited && mode === "register") {
-    $("authIntro").textContent = "Pendaftaran email sedang tertahan karena kuota email verifikasi proyek Supabase habis. Admin proyek perlu mengatur SMTP khusus sebelum pendaftaran email bisa digunakan lagi.";
-    $("authSubmit").disabled = true;
-    $("authSubmit").textContent = "PENDAFTARAN SEMENTARA DITUTUP";
-  } else {
-    $("authSubmit").disabled = false;
-  }
   $("authName").required = mode === "register";
   $("authTitle").textContent = mode === "login" ? "Senang melihatmu lagi." : "Mulai makan lebih baik.";
-  $("authIntro").textContent = mode === "login" ? "Masuk dan lanjutkan rencana makanmu." : "Buat akun agar rencana makan dan daftar belanja tersimpan.";
-  $("authSubmit").textContent = mode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
+  $("authIntro").textContent = mode === "login"
+    ? "Masuk dan lanjutkan rencana makanmu."
+    : "Buat akun agar rencana makan dan daftar belanja tersimpan.";
+  $("authSubmit").disabled = state.emailSignupRateLimited && mode === "register";
+  $("authSubmit").textContent = state.emailSignupRateLimited && mode === "register"
+    ? "PENDAFTARAN SEMENTARA DITUTUP"
+    : mode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
+
+  if (state.emailSignupRateLimited && mode === "register") {
+    $("authIntro").textContent = "Pendaftaran email sedang tertahan karena kuota email verifikasi proyek Supabase habis. Admin proyek perlu mengatur SMTP khusus sebelum pendaftaran email bisa digunakan lagi.";
+  }
+
   $("authSwitch").innerHTML = mode === "login"
     ? 'Belum punya akun? <button type="button" data-auth-switch>Daftar sekarang</button>'
     : 'Sudah punya akun? <button type="button" data-auth-switch>Masuk</button>';
   $("authSwitch").querySelector("button").onclick = () => openAuth(mode === "login" ? "register" : "login");
   openModal("authModal");
 }
-
 async function submitAuth(event) {
   event.preventDefault();
   const button = $("authSubmit");
