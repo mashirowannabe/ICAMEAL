@@ -295,6 +295,7 @@ function initHeroMotion() {
   const stage = document.querySelector(".hero-motion-stage");
   if (!stage || !state.recipes.length) return;
   const cards = [...stage.querySelectorAll("[data-hero-food]")];
+  if (!cards.length) return;
 
   const paint = () => {
     cards.forEach((img, index) => {
