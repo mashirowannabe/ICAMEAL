@@ -79,35 +79,15 @@ function shortDay(dateString) {
 function applyRecipePhoto(element, recipe) {
   if (!element || !recipe) return;
   const url = imageUrl(recipe.cover_image_url || recipe.image);
-  const tile = Number(recipe.image_tile || 0);
   element.classList.add("recipe-photo");
+  element.classList.remove("recipe-atlas-photo");
   element.style.backgroundImage = url ? 'url("' + url + '")' : "";
   element.style.backgroundRepeat = "no-repeat";
   element.style.backgroundPosition = "center";
   element.style.backgroundSize = "cover";
   element.setAttribute("role", "img");
   element.setAttribute("aria-label", recipe.title || recipe.name || "Menu IcaMeal");
-
-  if (tile >= 1 && tile <= 12 && url) {
-    const index = tile - 1;
-    const column = index % 4;
-    const row = Math.floor(index / 4);
-    element.classList.add("recipe-atlas-photo");
-    element.style.backgroundSize = "400% auto";
-    const positionTile = () => {
-      const width = element.clientWidth || 300;
-      const height = element.clientHeight || 220;
-      const maxVerticalOffset = Math.max(1, width * 3 - height);
-      const y = Math.min(100, (row * width / maxVerticalOffset) * 100);
-      element.style.backgroundPosition = (column / 3 * 100) + "% " + y + "%";
-    };
-    positionTile();
-    window.requestAnimationFrame(positionTile);
-  } else {
-    element.classList.remove("recipe-atlas-photo");
-  }
 }
-
 function recipeAsMeal(recipe, plannedOn, servings) {
   return {
     id: recipe.id,
@@ -118,7 +98,6 @@ function recipeAsMeal(recipe, plannedOn, servings) {
     name: recipe.title,
     price: recipe.estimated_cost_idr || 0,
     image: recipe.cover_image_url,
-    image_tile: recipe.image_tile || null,
     cal: recipe.calories || 0,
     protein: Number(recipe.protein_g || 0),
     carbs: Number(recipe.carbs_g || 0),
