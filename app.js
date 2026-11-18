@@ -104,7 +104,8 @@ function filteredMeals() {
 function getWeeklyRecipePool(diet = state.diet) {
   const available = state.recipes.filter((recipe) =>
     (diet === "all" || (recipe.tags || []).includes(diet)) &&
-    (state.isVip || recipe.access_tier === "free")
+    (state.isVip || recipe.access_tier === "free") &&
+    Number.isFinite(Number(recipe.estimated_cost_idr))
   );
   if (!available.length) {
     throw new Error("Belum ada menu yang cocok untuk mode " + diet + ".");
@@ -112,11 +113,56 @@ function getWeeklyRecipePool(diet = state.diet) {
   return available;
 }
 
-function buildWeeklyPlanRows(planId, startsOn, diet = state.diet, offset = 0) {
-  const pool = getWeeklyRecipePool(diet);
-  return Array.from({ length: 7 }, (_, index) => ({
+function chooseWeeklyRecipes(diet = state.diet, budget = state.budget) {
+  const pool = getWeeklyRecipePool(diet)
+    .slice()
+    .sort((a, b) =>
+      Number(a.estimated_cost_idr) - Number(b.estimated_cost_idr) ||
+      Number(a.sort_order || 0) - Number(b.sort_order || 0)
+    );
+
+  let chosen = [];
+  if (pool.length >= 7) {
+    let best = null;
+    const search = (startIndex, needed, total, selected) => {
+      if (needed === 0) {
+        if (total <= budget && (!best || total > best.total)) {
+          best = { recipes: selected.slice(), total };
+        }
+        return;
+      }
+      if (pool.length - startIndex < needed) return;
+
+      for (let i = startIndex; i <= pool.length - needed; i++) {
+        const cost = Number(pool[i].estimated_cost_idr || 0);
+        if (total + cost > budget) continue;
+        selected.push(pool[i]);
+        search(i + 1, needed - 1, total + cost, selected);
+        selected.pop();
+      }
+    };
+
+    search(0, 7, 0, []);
+    chosen = best ? best.recipes : pool.slice(0, 7);
+  } else {
+    // Keep every available recipe in the week, then repeat the cheapest
+    // options to fill seven days. The UI will expose the minimum over-budget.
+    chosen = pool.slice();
+    while (chosen.length < 7) chosen.push(pool[(chosen.length - pool.length) % pool.length]);
+  }
+
+  // Stable day ordering, independent from the price-search order.
+  chosen.sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0));
+  return chosen;
+}
+
+function buildWeeklyPlanRows(planId, startsOn, diet = state.diet, budget = state.budget, offset = 0) {
+  const chosen = chooseWeeklyRecipes(diet, budget);
+  const shift = ((offset % chosen.length) + chosen.length) % chosen.length;
+  const rotated = chosen.slice(shift).concat(chosen.slice(0, shift));
+  return rotated.map((recipe, index) => ({
     meal_plan_id: planId,
-    recipe_id: pool[(index + offset) % pool.length].id,
+    recipe_id: recipe.id,
     planned_on: addDaysIso(startsOn, index),
     meal_slot: "main",
     servings: 1
@@ -132,8 +178,20 @@ function setWeeklyItems(items) {
 }
 
 function estimate() {
-  const base = state.diet === "protein" ? 105000 : state.diet === "vegan" ? 82000 : state.diet === "hemat" ? 70000 : 77500;
-  return Math.round(base * (state.budget / 120000) * 0.7 + base * 0.3);
+  return meals.reduce((total, meal) =>
+    total + Number(meal.price || 0) * Number(meal.servings || 1), 0
+  );
+}
+
+function getBudgetSummary() {
+  const total = estimate();
+  const remaining = state.budget - total;
+  return {
+    total,
+    remaining,
+    withinBudget: remaining >= 0,
+    shortfall: Math.max(0, -remaining)
+  };
 }
 
 function hasActiveEntitlement(code) {
@@ -153,16 +211,21 @@ function syncEntitlementFlags() {
 }
 
 function renderBudget() {
-  const cost = estimate();
-  const remaining = state.budget - cost;
+  const summary = getBudgetSummary();
   $("budgetInput").value = state.budget;
   $("budgetRange").value = state.budget;
-  $("estimatedCost").textContent = money(cost);
+  $("estimatedCost").textContent = money(summary.total);
   $("budgetAvailable").textContent = money(state.budget);
-  $("budgetRemaining").textContent = money(remaining);
-  $("budgetMeter").style.width = Math.min(100, (cost / Math.max(1, state.budget)) * 100) + "%";
-  $("budgetStatus").textContent = remaining >= 0 ? "✓ Masih dalam anggaran" : "⚠ Melebihi anggaran";
-  $("budgetStatus").classList.toggle("over", remaining < 0);
+  $("budgetRemaining").textContent = money(summary.remaining);
+  $("budgetMeter").style.width = Math.min(100, (summary.total / Math.max(1, state.budget)) * 100) + "%";
+
+  if (summary.withinBudget) {
+    $("budgetStatus").textContent = "✓ Total 7 menu sesuai anggaran";
+  } else {
+    $("budgetStatus").textContent = "⚠ Menu termurah 7 hari masih kurang " + money(summary.shortfall) +
+      " · minimum " + money(summary.total);
+  }
+  $("budgetStatus").classList.toggle("over", !summary.withinBudget);
 }
 
 function renderPlanner() {
@@ -657,22 +720,25 @@ async function ensureWeeklyPlan() {
   if (planError) throw planError;
   state.weekPlan = plan;
 
-  let { data: items, error: itemsError } = await supabaseClient.from("meal_plan_items")
+  const { data: currentItems, error: itemsError } = await supabaseClient.from("meal_plan_items")
     .select("id,meal_plan_id,recipe_id,planned_on,meal_slot,servings")
     .eq("meal_plan_id", plan.id)
     .order("planned_on");
   if (itemsError) throw itemsError;
 
-  const pool = getWeeklyRecipePool(state.diet);
-  const eligibleIds = new Set(pool.map((recipe) => recipe.id));
-  const needsDietSync = !items || items.length !== 7 ||
-    items.some((item) => !eligibleIds.has(item.recipe_id)) ||
-    items.some((item) => item.meal_slot !== "main");
+  const expected = buildWeeklyPlanRows(plan.id, start, state.diet, state.budget);
+  const current = currentItems || [];
+  const needsSync = current.length !== 7 || expected.some((expectedItem, index) =>
+    !current[index] ||
+    current[index].planned_on !== expectedItem.planned_on ||
+    current[index].recipe_id !== expectedItem.recipe_id ||
+    current[index].meal_slot !== expectedItem.meal_slot
+  );
 
-  if (needsDietSync) {
-    const generated = buildWeeklyPlanRows(plan.id, start, state.diet);
+  let items = current;
+  if (needsSync) {
     const saved = await supabaseClient.from("meal_plan_items")
-      .upsert(generated, { onConflict: "meal_plan_id,planned_on,meal_slot" })
+      .upsert(expected, { onConflict: "meal_plan_id,planned_on,meal_slot" })
       .select("id,meal_plan_id,recipe_id,planned_on,meal_slot,servings")
       .order("planned_on");
     if (saved.error) throw saved.error;
@@ -863,7 +929,8 @@ async function loadGuestData() {
   state.budget = 120000;
   state.diet = "all";
   const start = mondayIso();
-  meals = state.recipes.slice(0, 7).map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
+  meals = chooseWeeklyRecipes(state.diet, state.budget)
+    .map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
   await loadOrCreateShoppingList();
   document.querySelectorAll("[data-diet]").forEach((button) => button.classList.toggle("active", button.dataset.diet === "all"));
   updateHeader();
@@ -1004,15 +1071,14 @@ async function submitAuth(event) {
 
 async function applyDietPreference(diet) {
   if (!["all", "vegan", "protein", "hemat"].includes(diet)) return;
-  const pool = getWeeklyRecipePool(diet);
-  if (!pool.length) {
-    toast("Belum ada menu yang cocok dengan mode ini.");
-    return;
-  }
-
   const previousDiet = state.diet;
   state.diet = diet;
+
   try {
+    const expected = state.weekPlan
+      ? buildWeeklyPlanRows(state.weekPlan.id, state.weekPlan.starts_on, diet, state.budget)
+      : null;
+
     if (state.user && state.weekPlan) {
       const profileUpdate = await supabaseClient.from("profiles")
         .update({ diet_preference: diet })
@@ -1020,13 +1086,12 @@ async function applyDietPreference(diet) {
       if (profileUpdate.error) throw profileUpdate.error;
 
       const planUpdate = await supabaseClient.from("meal_plans")
-        .update({ diet_preference: diet })
+        .update({ diet_preference: diet, weekly_budget_idr: state.budget })
         .eq("id", state.weekPlan.id);
       if (planUpdate.error) throw planUpdate.error;
 
-      const generated = buildWeeklyPlanRows(state.weekPlan.id, state.weekPlan.starts_on, diet);
       const saved = await supabaseClient.from("meal_plan_items")
-        .upsert(generated, { onConflict: "meal_plan_id,planned_on,meal_slot" })
+        .upsert(expected, { onConflict: "meal_plan_id,planned_on,meal_slot" })
         .select("id,meal_plan_id,recipe_id,planned_on,meal_slot,servings")
         .order("planned_on");
       if (saved.error) throw saved.error;
@@ -1036,10 +1101,9 @@ async function applyDietPreference(diet) {
       setWeeklyItems(saved.data || []);
       await loadOrCreateShoppingList();
     } else {
+      const pool = chooseWeeklyRecipes(diet, state.budget);
       const start = mondayIso();
-      meals = Array.from({ length: 7 }, (_, index) =>
-        recipeAsMeal(pool[index % pool.length], addDaysIso(start, index), 1)
-      );
+      meals = pool.map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
       state.weekItems = [];
       await loadOrCreateShoppingList();
     }
@@ -1048,9 +1112,12 @@ async function applyDietPreference(diet) {
     renderBudget();
     renderPlanner();
     if (meals.length) selectDay(0);
-    toast(diet === "all"
-      ? "Menu mingguan dan daftar belanja diperbarui."
-      : "Mode " + (diet === "vegan" ? "Vegan" : diet === "protein" ? "Tinggi protein" : "Super hemat") + " diterapkan. Menu dan bahan sudah disesuaikan.");
+    const summary = getBudgetSummary();
+    toast(!summary.withinBudget
+      ? "Mode diet diterapkan. Menu termurah membutuhkan " + money(summary.total) + " untuk 7 hari."
+      : diet === "all"
+        ? "Menu mingguan dan daftar belanja diperbarui."
+        : "Mode " + (diet === "vegan" ? "Vegan" : diet === "protein" ? "Tinggi protein" : "Super hemat") + " diterapkan. Total 7 menu " + money(summary.total) + ".");
   } catch (error) {
     state.diet = previousDiet;
     document.querySelectorAll("[data-diet]").forEach((button) => {
@@ -1059,6 +1126,60 @@ async function applyDietPreference(diet) {
     renderBudget();
     console.error("Diet preference update failed:", error);
     toast("Mode diet gagal diterapkan: " + (error.message || "Periksa koneksi."));
+  }
+}
+
+async function applyWeeklyBudget(nextBudget) {
+  const budget = Math.min(500000, Math.max(50000, Math.round(Number(nextBudget) || 50000)));
+  const previousBudget = state.budget;
+  state.budget = budget;
+
+  try {
+    if (state.user && state.weekPlan) {
+      const profileUpdate = await supabaseClient.from("profiles")
+        .update({ weekly_budget_idr: budget })
+        .eq("id", state.user.id);
+      if (profileUpdate.error) throw profileUpdate.error;
+
+      const planUpdate = await supabaseClient.from("meal_plans")
+        .update({ weekly_budget_idr: budget })
+        .eq("id", state.weekPlan.id);
+      if (planUpdate.error) throw planUpdate.error;
+
+      const generated = buildWeeklyPlanRows(state.weekPlan.id, state.weekPlan.starts_on, state.diet, budget);
+      const saved = await supabaseClient.from("meal_plan_items")
+        .upsert(generated, { onConflict: "meal_plan_id,planned_on,meal_slot" })
+        .select("id,meal_plan_id,recipe_id,planned_on,meal_slot,servings")
+        .order("planned_on");
+      if (saved.error) throw saved.error;
+      state.profile = { ...(state.profile || {}), weekly_budget_idr: budget };
+      state.weekPlan = { ...state.weekPlan, weekly_budget_idr: budget };
+      setWeeklyItems(saved.data || []);
+      await loadOrCreateShoppingList();
+    } else {
+      const chosen = chooseWeeklyRecipes(state.diet, budget);
+      const start = mondayIso();
+      meals = chosen.map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
+      state.weekItems = [];
+      await loadOrCreateShoppingList();
+    }
+
+    state.selectedDay = 0;
+    renderBudget();
+    renderPlanner();
+    if (meals.length) selectDay(0);
+
+    const summary = getBudgetSummary();
+    toast(summary.withinBudget
+      ? "Menu dan daftar belanja disesuaikan dengan anggaran " + money(budget) + "."
+      : "Anggaran " + money(budget) + " belum cukup. Biaya minimum 7 menu adalah " + money(summary.total) + ".");
+  } catch (error) {
+    state.budget = previousBudget;
+    $("budgetInput").value = previousBudget;
+    $("budgetRange").value = previousBudget;
+    renderBudget();
+    console.error("Weekly budget update failed:", error);
+    toast("Anggaran gagal diterapkan: " + (error.message || "Periksa koneksi."));
   }
 }
 
@@ -1106,13 +1227,13 @@ async function purchaseProduct(productCode) {
 async function regenerateWeeklyPlan() {
   if (!state.recipes.length) return;
   try {
-    const pool = getWeeklyRecipePool(state.diet);
-    const currentRecipeId = state.weekItems[0]?.recipe_id || meals[0]?.id;
-    const currentIndex = pool.findIndex((recipe) => recipe.id === currentRecipeId);
+    const pool = chooseWeeklyRecipes(state.diet, state.budget);
+    const currentFirst = state.weekItems[0]?.recipe_id || meals[0]?.id;
+    const currentIndex = pool.findIndex((recipe) => recipe.id === currentFirst);
     const offset = currentIndex >= 0 ? (currentIndex + 1) % pool.length : 0;
 
     if (state.user && state.weekPlan) {
-      const generated = buildWeeklyPlanRows(state.weekPlan.id, state.weekPlan.starts_on, state.diet, offset);
+      const generated = buildWeeklyPlanRows(state.weekPlan.id, state.weekPlan.starts_on, state.diet, state.budget, offset);
       const saved = await supabaseClient.from("meal_plan_items")
         .upsert(generated, { onConflict: "meal_plan_id,planned_on,meal_slot" })
         .select("id,meal_plan_id,recipe_id,planned_on,meal_slot,servings")
@@ -1122,17 +1243,21 @@ async function regenerateWeeklyPlan() {
       await loadOrCreateShoppingList();
     } else {
       const start = mondayIso();
-      meals = Array.from({ length: 7 }, (_, index) =>
-        recipeAsMeal(pool[(index + offset) % pool.length], addDaysIso(start, index), 1)
-      );
+      const shift = pool.length ? offset % pool.length : 0;
+      const rotated = pool.slice(shift).concat(pool.slice(0, shift));
+      meals = rotated.map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
       state.weekItems = [];
       await loadOrCreateShoppingList();
     }
 
     state.selectedDay = 0;
+    renderBudget();
     renderPlanner();
     if (meals.length) selectDay(0);
-    toast("Menu dan daftar belanja berhasil disusun ulang sesuai mode yang dipilih.");
+    const summary = getBudgetSummary();
+    toast(summary.withinBudget
+      ? "Menu 7 hari disusun ulang, total " + money(summary.total) + "."
+      : "Ini kombinasi termurah yang tersedia: " + money(summary.total) + ". Anggaran perlu ditambah " + money(summary.shortfall) + ".");
   } catch (error) {
     console.error("Weekly plan regeneration failed:", error);
     toast("Rencana mingguan gagal diperbarui: " + (error.message || "Periksa koneksi."));
@@ -1186,21 +1311,14 @@ function bindEvents() {
   });
 
   $("budgetInput").addEventListener("change", async (event) => {
-    state.budget = Math.min(500000, Math.max(50000, Number(event.target.value) || 50000));
-    renderBudget();
-    await saveProfile({ weekly_budget_idr: state.budget });
+    const value = Number(event.target.value) || 50000;
+    await applyWeeklyBudget(value);
   });
   $("budgetRange").addEventListener("change", async (event) => {
-    state.budget = Number(event.target.value);
-    renderBudget();
-    await saveProfile({ weekly_budget_idr: state.budget });
+    await applyWeeklyBudget(Number(event.target.value));
   });
   document.querySelectorAll("[data-budget]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      state.budget = Number(button.dataset.budget);
-      renderBudget();
-      await saveProfile({ weekly_budget_idr: state.budget });
-    });
+    button.addEventListener("click", async () => applyWeeklyBudget(Number(button.dataset.budget)));
   });
   document.querySelectorAll("[data-diet]").forEach((button) => {
     button.addEventListener("click", async () => {
