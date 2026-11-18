@@ -710,10 +710,10 @@ async function loadProducts() {
   document.querySelectorAll('[data-plan="monthly"] b').forEach((label) => {
     if (priceText("good_food_club_monthly")) label.textContent = priceText("good_food_club_monthly");
   });
-  document.querySelectorAll('[data-plan="yearly"] b').forEach((label) => {
-    if (priceText("good_food_club_yearly")) label.textContent = priceText("good_food_club_yearly");
-  });
 
+  if (priceText("good_food_club_monthly") && $("membershipMonthlyPrice")) $("membershipMonthlyPrice").textContent = priceText("good_food_club_monthly");
+  if (priceText("recipe_book_30") && $("membershipRecipeBookPrice")) $("membershipRecipeBookPrice").textContent = priceText("recipe_book_30");
+  if (priceText("meal_plan_30_days") && $("membershipMealPlanPrice")) $("membershipMealPlanPrice").textContent = priceText("meal_plan_30_days");
   const recipeBookOffer = $("buyRecipeBook")?.closest(".single-recipe-offer");
   if (recipeBookOffer && priceText("recipe_book_30")) recipeBookOffer.querySelector(".single-recipe-bottom b").innerHTML = priceText("recipe_book_30") + ' <small>/ sekali beli</small>';
   const monthlyOffer = $("buyMonthlyPlanFromOffers")?.closest(".single-recipe-offer");
@@ -1318,6 +1318,9 @@ function bindEvents() {
   });
   document.querySelectorAll("[data-subscribe]").forEach((button) => {
     button.addEventListener("click", () => openModal("subscriptionModal"));
+  });
+  document.querySelectorAll("[data-purchase]").forEach((button) => {
+    button.addEventListener("click", () => purchaseProduct(button.dataset.purchase));
   });
   document.querySelectorAll("[data-plan]").forEach((button) => {
     button.addEventListener("click", () => {

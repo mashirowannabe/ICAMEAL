@@ -340,3 +340,51 @@
 @media(prefers-reduced-motion:reduce){
   .hero-editorial-food{filter:none}
 }
+
+
+/* IcaMeal hero v2: full-viewport wordmark, oversized cutout and botanical frame. */
+.hero.hero-editorial{
+  min-height:calc(100svh - 76px);padding:8px 3.5% 22px;display:flex;align-items:center;justify-content:center;overflow:visible;
+}
+.hero-editorial-inner{width:100%;max-width:1800px;margin:0 auto}
+.hero-wordmark{margin:0 auto 12px;color:var(--forest);text-align:center;font:600 clamp(190px,29vw,520px)/.76 var(--sans);letter-spacing:-.105em;white-space:nowrap;line-height:.76}
+.hero-editorial-frame{width:min(95%,1640px);margin:0 auto;position:relative;border:1px solid var(--forest);overflow:visible}
+.hero-editorial-photo-stage{height:clamp(390px,53vh,650px);position:relative;overflow:visible;background:transparent}
+.hero-editorial-food{position:absolute;z-index:2;left:50%;top:-116px;width:clamp(620px,68vw,1120px);height:auto;max-width:none;display:block;transform:translateX(-50%);object-fit:contain;filter:drop-shadow(0 18px 24px rgba(20,38,27,.15));pointer-events:none}
+.hero-botanical-band{position:relative;z-index:1;height:88px;border-top:1px solid var(--forest);background-color:#dba674;background-image:url("assets/hero-botanical.svg");background-repeat:repeat-x;background-position:center;background-size:340px 88px}
+.hero-editorial-footer{display:none!important}
+.hero.hero-editorial+.manifesto{display:none!important}
+.membership-product-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:24px}
+.membership-product-card{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:16px;padding:17px;border:1px solid rgba(32,56,43,.24);background:#f7f3eb}
+.membership-product-featured{grid-column:1/-1;flex-direction:row;align-items:center;gap:20px;background:#fffaf1;border:1.5px solid var(--forest)}
+.membership-product-info{min-width:0}
+.membership-product-card h3{font:600 24px/.98 var(--serif);letter-spacing:-.035em;margin:8px 0 6px}
+.membership-product-card p{font-size:10px;line-height:1.55;color:#667365;margin:0}
+.membership-product-price{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin-top:12px}
+.membership-product-price b{font:600 22px var(--serif);color:var(--forest)}
+.membership-product-price span{font-size:9px;color:var(--muted)}
+.membership-product-card .button{width:100%;min-height:40px;padding:11px 12px;font-size:9px;white-space:nowrap}
+.membership-product-featured .button{width:auto;min-width:180px;min-height:46px}
+.membership-prices{grid-template-columns:1fr}
+@media(max-width:1000px){
+ .hero.hero-editorial{min-height:calc(100svh - 76px);padding:10px 2.5% 18px}
+ .hero-wordmark{font-size:29vw}
+ .hero-editorial-frame{width:96%}
+ .hero-editorial-photo-stage{height:52vh;min-height:350px}
+ .hero-editorial-food{width:clamp(560px,72vw,880px);top:-100px}
+ .hero-botanical-band{height:76px;background-size:300px 76px}
+ .membership-product-card h3{font-size:22px}
+}
+@media(max-width:700px){
+ .hero.hero-editorial{min-height:calc(100svh - 65px);padding:14px 2% 20px;align-items:center}
+ .hero-wordmark{font-size:27vw;letter-spacing:-.115em;margin-bottom:18px}
+ .hero-editorial-frame{width:98%}
+ .hero-editorial-photo-stage{height:48vh;min-height:310px;max-height:450px}
+ .hero-editorial-food{width:112vw;top:-42px}
+ .hero-botanical-band{height:58px;background-size:235px 58px}
+ .membership-product-options{grid-template-columns:1fr}
+ .membership-product-featured{grid-column:auto;flex-direction:column;align-items:stretch}
+ .membership-product-featured .button{width:100%}
+ .membership-product-card{padding:17px}
+}
+@media(prefers-reduced-motion:reduce){.hero-editorial-food{filter:none}}
