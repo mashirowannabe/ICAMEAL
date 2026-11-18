@@ -638,8 +638,19 @@ async function ensureMonthlyPlan() {
     return;
   }
 
-  const start = state.monthlyPlan?.starts_on || todayIso();
-  const end = addDaysIso(start, 29);
+  const today = todayIso();
+  const { data: activePlan, error: activePlanError } = await supabaseClient.from("meal_plans")
+    .select("id,starts_on,ends_on")
+    .eq("user_id", state.user.id)
+    .eq("plan_type", "monthly")
+    .lte("starts_on", today)
+    .gte("ends_on", today)
+    .order("starts_on", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (activePlanError) throw activePlanError;
+  const start = activePlan?.starts_on || today;
+  const end = activePlan?.ends_on || addDaysIso(start, 29);
   const { data: plan, error: planError } = await supabaseClient.from("meal_plans")
     .upsert({
       user_id: state.user.id,
@@ -961,11 +972,12 @@ async function regenerateWeeklyPlan() {
   if (!state.recipes.length) return;
   if (!state.weekPlan || !state.user) {
     const current = meals[0]?.id;
-    const currentIndex = state.recipes.findIndex((recipe) => recipe.id === current);
-    const offset = (currentIndex + 1) % state.recipes.length;
+    const eligibleRecipes = state.recipes.filter((recipe) => recipe.access_tier === "free");
+    const currentIndex = eligibleRecipes.findIndex((recipe) => recipe.id === current);
+    const offset = (Math.max(0, currentIndex) + 1) % eligibleRecipes.length;
     const start = mondayIso();
     meals = Array.from({ length: 7 }, (_, index) =>
-      recipeAsMeal(state.recipes[(offset + index) % state.recipes.length], addDaysIso(start, index), 1)
+      recipeAsMeal(eligibleRecipes[(offset + index) % eligibleRecipes.length], addDaysIso(start, index), 1)
     );
     state.selectedDay = 0;
     renderPlanner();
@@ -980,11 +992,12 @@ async function regenerateWeeklyPlan() {
   }
 
   try {
-    const currentIndex = state.recipes.findIndex((recipe) => recipe.id === state.weekItems[0]?.recipe_id);
-    const offset = (currentIndex + 1) % state.recipes.length;
+    const eligibleRecipes = state.isVip ? state.recipes : state.recipes.filter((recipe) => recipe.access_tier === "free");
+    const currentIndex = eligibleRecipes.findIndex((recipe) => recipe.id === state.weekItems[0]?.recipe_id);
+    const offset = (Math.max(0, currentIndex) + 1) % eligibleRecipes.length;
     const rows = Array.from({ length: 7 }, (_, index) => ({
       meal_plan_id: state.weekPlan.id,
-      recipe_id: state.recipes[(offset + index) % state.recipes.length].id,
+      recipe_id: eligibleRecipes[(offset + index) % eligibleRecipes.length].id,
       planned_on: addDaysIso(state.weekPlan.starts_on, index),
       meal_slot: "main",
       servings: 1
@@ -1075,6 +1088,8 @@ function bindEvents() {
       });
       renderBudget();
       renderPlanner();
+      const matchingMeals = filteredMeals();
+      if (matchingMeals.length) selectDay(meals.indexOf(matchingMeals[0]));
       await saveProfile({ diet_preference: state.diet });
     });
   });
