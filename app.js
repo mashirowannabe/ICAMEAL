@@ -24,6 +24,7 @@ const state = {
   plan: "monthly",
   showAllRecipes: false,
   authMode: "login",
+  emailSignupRateLimited: false,
   weekPlan: null,
   weekItems: [],
   monthlyPlan: null,
@@ -874,15 +875,24 @@ function openAuth(mode) {
   $("nameField").classList.toggle("hidden", mode !== "register");
   $("authName").required = mode === "register";
   $("authTitle").textContent = mode === "login" ? "Senang melihatmu lagi." : "Mulai makan lebih baik.";
-  $("authIntro").textContent = mode === "login" ? "Masuk dan lanjutkan rencana makanmu." : "Buat akun agar rencana makan dan daftar belanja tersimpan.";
-  $("authSubmit").textContent = mode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
+  $("authIntro").textContent = mode === "login"
+    ? "Masuk dan lanjutkan rencana makanmu."
+    : "Buat akun agar rencana makan dan daftar belanja tersimpan.";
+  $("authSubmit").disabled = state.emailSignupRateLimited && mode === "register";
+  $("authSubmit").textContent = state.emailSignupRateLimited && mode === "register"
+    ? "PENDAFTARAN SEMENTARA DITUTUP"
+    : mode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
+
+  if (state.emailSignupRateLimited && mode === "register") {
+    $("authIntro").textContent = "Pendaftaran email sedang tertahan karena kuota email verifikasi proyek Supabase habis. Admin proyek perlu mengatur SMTP khusus sebelum pendaftaran email bisa digunakan lagi.";
+  }
+
   $("authSwitch").innerHTML = mode === "login"
     ? 'Belum punya akun? <button type="button" data-auth-switch>Daftar sekarang</button>'
     : 'Sudah punya akun? <button type="button" data-auth-switch>Masuk</button>';
   $("authSwitch").querySelector("button").onclick = () => openAuth(mode === "login" ? "register" : "login");
   openModal("authModal");
 }
-
 async function submitAuth(event) {
   event.preventDefault();
   const button = $("authSubmit");
@@ -920,10 +930,25 @@ async function submitAuth(event) {
       toast("Selamat datang kembali.");
     }
   } catch (error) {
-    toast(error.message || "Autentikasi gagal.");
+    const errorCode = String(error?.code || "");
+    const errorMessage = String(error?.message || "");
+    const emailRateLimited =
+      errorCode === "over_email_send_rate_limit" ||
+      /email rate limit exceeded/i.test(errorMessage);
+
+    if (state.authMode === "register" && emailRateLimited) {
+      state.emailSignupRateLimited = true;
+      $("authIntro").textContent = "Pendaftaran tertahan karena layanan email bawaan Supabase mencapai batas pengiriman. Ini bukan masalah password. Admin proyek perlu mengatur Custom SMTP di Authentication → SMTP Settings, atau mematikan Confirm email sementara hanya untuk pengujian lokal.";
+      toast("Kuota email verifikasi Supabase habis. Jangan kirim percobaan daftar berulang kali.");
+    } else {
+      toast(errorMessage || "Autentikasi gagal.");
+    }
   } finally {
-    button.disabled = false;
-    button.textContent = state.authMode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
+    const signupBlocked = state.authMode === "register" && state.emailSignupRateLimited;
+    button.disabled = signupBlocked;
+    button.textContent = signupBlocked
+      ? "PENDAFTARAN SEMENTARA DITUTUP"
+      : state.authMode === "login" ? "MASUK KE ICAMEAL ↗" : "BUAT AKUN ↗";
   }
 }
 

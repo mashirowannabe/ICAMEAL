@@ -22,6 +22,16 @@ In Supabase Dashboard → Authentication → URL Configuration:
 
 When email confirmation is enabled, sign-up creates the account but the user must verify their email before signing in. The UI displays that state.
 
+### Email delivery and rate limits
+
+The hosted project's built-in SMTP service is for testing only. It restricts recipients to organization team-member addresses and has a very low project-wide hourly send allowance. When that allowance is exhausted, Auth returns HTTP 429 with `over_email_send_rate_limit` / `email rate limit exceeded`.
+
+For normal public sign-ups, configure a custom SMTP provider in **Authentication → SMTP Settings** and follow the provider's sender-domain verification steps. After SMTP works, check **Authentication → Rate Limits** and set limits appropriate for the provider's sending capacity.
+
+For local-only testing, you can temporarily turn **Confirm email** off under **Authentication → Sign In / Providers → Email**. This lets new accounts sign up without sending a verification email, but it also marks submitted email addresses as verified without proving ownership. Do not use this shortcut for a public deployment; turn confirmation back on before launch.
+
+Official Supabase guidance: [Testing Auth flows](https://supabase.com/docs/guides/auth/testing-auth-flows), [Custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp), and [Auth rate limits](https://supabase.com/docs/guides/auth/rate-limits).
+
 ## Data ownership
 
 - Recipe metadata, images, nutrition data, products, ingredients, and recipe instructions are read from PostgreSQL.
