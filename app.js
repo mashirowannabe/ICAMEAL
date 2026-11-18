@@ -6,7 +6,7 @@ const money = (value) => "Rp" + Number(value || 0).toLocaleString("id-ID");
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
-const imageUrl = (value) => typeof value === "string" && /^https?:\/\//i.test(value) ? value : "";
+const imageUrl = (value) => typeof value === "string" && (/^https?:\/\//i.test(value) || /^\/assets\/recipes\/[a-z0-9._/-]+$/i.test(value)) ? value : "";
 
 const state = {
   recipes: [],
@@ -75,6 +75,39 @@ function shortDay(dateString) {
   return dateLabel(dateString, { weekday: "short" }).replace(".", "").slice(0, 3).toUpperCase();
 }
 
+
+function applyRecipePhoto(element, recipe) {
+  if (!element || !recipe) return;
+  const url = imageUrl(recipe.cover_image_url || recipe.image);
+  const tile = Number(recipe.image_tile || 0);
+  element.classList.add("recipe-photo");
+  element.style.backgroundImage = url ? 'url("' + url + '")' : "";
+  element.style.backgroundRepeat = "no-repeat";
+  element.style.backgroundPosition = "center";
+  element.style.backgroundSize = "cover";
+  element.setAttribute("role", "img");
+  element.setAttribute("aria-label", recipe.title || recipe.name || "Menu IcaMeal");
+
+  if (tile >= 1 && tile <= 12 && url) {
+    const index = tile - 1;
+    const column = index % 4;
+    const row = Math.floor(index / 4);
+    element.classList.add("recipe-atlas-photo");
+    element.style.backgroundSize = "400% auto";
+    const positionTile = () => {
+      const width = element.clientWidth || 300;
+      const height = element.clientHeight || 220;
+      const maxVerticalOffset = Math.max(1, width * 3 - height);
+      const y = Math.min(100, (row * width / maxVerticalOffset) * 100);
+      element.style.backgroundPosition = (column / 3 * 100) + "% " + y + "%";
+    };
+    positionTile();
+    window.requestAnimationFrame(positionTile);
+  } else {
+    element.classList.remove("recipe-atlas-photo");
+  }
+}
+
 function recipeAsMeal(recipe, plannedOn, servings) {
   return {
     id: recipe.id,
@@ -85,6 +118,7 @@ function recipeAsMeal(recipe, plannedOn, servings) {
     name: recipe.title,
     price: recipe.estimated_cost_idr || 0,
     image: recipe.cover_image_url,
+    image_tile: recipe.image_tile || null,
     cal: recipe.calories || 0,
     protein: Number(recipe.protein_g || 0),
     carbs: Number(recipe.carbs_g || 0),
@@ -235,7 +269,7 @@ function renderPlanner() {
     const locked = index >= 3 && !state.isVip;
     return '<button class="day-card ' + (index === state.selectedDay ? "selected " : "") + (locked ? "locked" : "") + '" data-day="' + index + '">' +
       '<div class="day-top"><span>' + escapeHtml(meal.day) + '</span><b>' + escapeHtml(meal.date) + '</b></div>' +
-      '<img src="' + escapeHtml(imageUrl(meal.image)) + '" alt="' + escapeHtml(meal.name) + '">' +
+      '<div class="recipe-photo day-card-image" data-meal-photo="' + escapeHtml(meal.id) + '"></div>' +
       '<h3>' + (locked ? "Menu premium" : escapeHtml(meal.name)) + '</h3>' +
       '<span class="day-price">' + (locked ? "GOOD FOOD CLUB" : money(meal.price)) + '</span>' +
       (locked ? '<span class="lock-label">🔒 PREMIUM MENU</span>' : "") +
@@ -245,13 +279,16 @@ function renderPlanner() {
   $("weekGrid").querySelectorAll("[data-day]").forEach((button) => {
     button.addEventListener("click", () => selectDay(Number(button.dataset.day)));
   });
+  $("weekGrid").querySelectorAll("[data-meal-photo]").forEach((photo) => {
+    const recipe = state.recipes.find((item) => item.id === photo.dataset.mealPhoto);
+    if (recipe) applyRecipePhoto(photo, recipe);
+  });
   $("weeklyLockedNotice").classList.toggle("hidden", state.isVip);
 }
 
 function showMealDetail(meal, dayCaption, fromMonthly) {
   state.currentMealFromMonthly = Boolean(fromMonthly);
-  $("detailImage").src = imageUrl(meal.image);
-  $("detailImage").alt = meal.name;
+  applyRecipePhoto($("detailImage"), state.recipes.find((recipe) => recipe.id === meal.recipe_id) || meal);
   $("detailDay").textContent = dayCaption;
   $("detailTitle").textContent = meal.name;
   $("detailDescription").textContent = meal.description || "Menu sederhana dengan bahan yang mudah ditemukan.";
@@ -286,10 +323,8 @@ function initHeroMotion() {
       const recipe = state.recipes[(heroCursor + index * 2) % state.recipes.length];
       img.classList.add("is-changing");
       window.setTimeout(() => {
-        img.src = imageUrl(recipe.cover_image_url);
-        img.alt = "Inspirasi menu " + recipe.title;
-        img.onload = () => img.classList.remove("is-changing");
-        img.onerror = () => img.classList.remove("is-changing");
+        applyRecipePhoto(img, recipe);
+        img.classList.remove("is-changing");
       }, 180);
     });
     $("heroFoodCaption").textContent = state.recipes[heroCursor % state.recipes.length].title;
@@ -342,7 +377,8 @@ function renderRecipes() {
   $("recipeGrid").querySelectorAll("[data-recipe]").forEach((row) => {
     if (row.dataset.locked !== "true") {
       row.addEventListener("mouseenter", (event) => {
-        previewImage.src = row.dataset.image;
+        const recipe = state.recipes.find((item) => item.id === row.dataset.recipe);
+        if (recipe) applyRecipePhoto(previewImage, recipe);
         previewLabel.textContent = row.dataset.name;
         preview.classList.add("visible");
         movePreview(event);
@@ -350,7 +386,8 @@ function renderRecipes() {
       row.addEventListener("mousemove", movePreview);
       row.addEventListener("mouseleave", hidePreview);
       row.addEventListener("focus", () => {
-        previewImage.src = row.dataset.image;
+        const recipe = state.recipes.find((item) => item.id === row.dataset.recipe);
+        if (recipe) applyRecipePhoto(previewImage, recipe);
         previewLabel.textContent = row.dataset.name;
         const rect = row.getBoundingClientRect();
         preview.style.left = Math.max(12, Math.min(window.innerWidth - 260, rect.right + 18)) + "px";
@@ -383,8 +420,7 @@ async function openRecipe(recipeId, options) {
     return;
   }
 
-  $("recipeModalImage").src = imageUrl(recipe.cover_image_url);
-  $("recipeModalImage").alt = recipe.title;
+  applyRecipePhoto($("recipeModalImage"), recipe);
   $("recipeModalMeta").textContent = (recipe.prep_time_minutes || 20) + " MENIT · " + money(recipe.estimated_cost_idr) + " / PORSI";
   $("recipeTitle").textContent = recipe.title;
   $("recipeCalories").textContent = recipe.calories || 0;
@@ -446,7 +482,7 @@ function aggregateIngredients(recipeItems, recipeIngredientRows) {
   (recipeIngredientRows || []).forEach((row) => {
     const ingredient = Array.isArray(row.ingredients) ? row.ingredients[0] : row.ingredients;
     if (!ingredient) return;
-    const key = row.ingredient_id + "|" + row.unit;
+    const key = row.ingredient_id;
     const current = grouped.get(key) || {
       id: key,
       ingredient_id: row.ingredient_id,
@@ -456,6 +492,9 @@ function aggregateIngredients(recipeItems, recipeIngredientRows) {
       unit: row.unit,
       is_checked: false
     };
+    if (current.unit !== row.unit) {
+      throw new Error("Satuan bahan " + ingredient.name + " belum konsisten. Samakan satuannya di data resep.");
+    }
     current.quantity += Number(row.quantity || 0) * (recipeServings.get(row.recipe_id) || 1);
     grouped.set(key, current);
   });
@@ -531,12 +570,13 @@ async function loadOrCreateShoppingList() {
   const oldRows = currentRows || [];
   const oldByKey = new Map(oldRows
     .filter((row) => row.ingredient_id)
-    .map((row) => [row.ingredient_id + "|" + (row.unit || ""), row]));
+    .map((row) => [row.ingredient_id, row]));
   const currentMatches = oldRows.length === generated.length &&
     generated.every((item) => {
-      const old = oldByKey.get(item.ingredient_id + "|" + item.unit);
+      const old = oldByKey.get(item.ingredient_id);
       return old &&
         Math.abs(Number(old.quantity || 0) - Number(item.quantity || 0)) < 0.001 &&
+        old.unit === item.unit &&
         old.category === item.category;
     });
 
@@ -551,7 +591,7 @@ async function loadOrCreateShoppingList() {
 
     if (generated.length) {
       const inserts = generated.map((item) => {
-        const previous = oldByKey.get(item.ingredient_id + "|" + item.unit);
+        const previous = oldByKey.get(item.ingredient_id);
         return {
           shopping_list_id: list.id,
           ingredient_id: item.ingredient_id,
@@ -1072,6 +1112,7 @@ async function submitAuth(event) {
 async function applyDietPreference(diet) {
   if (!["all", "vegan", "protein", "hemat"].includes(diet)) return;
   const previousDiet = state.diet;
+  let shoppingSyncFailed = false;
   state.diet = diet;
 
   try {
@@ -1099,13 +1140,23 @@ async function applyDietPreference(diet) {
       state.profile = { ...(state.profile || {}), diet_preference: diet };
       state.weekPlan = { ...state.weekPlan, diet_preference: diet };
       setWeeklyItems(saved.data || []);
-      await loadOrCreateShoppingList();
+      try {
+        await loadOrCreateShoppingList();
+      } catch (shoppingError) {
+        shoppingSyncFailed = true;
+        console.error("Shopping list sync after diet change failed:", shoppingError);
+      }
     } else {
       const pool = chooseWeeklyRecipes(diet, state.budget);
       const start = mondayIso();
       meals = pool.map((recipe, index) => recipeAsMeal(recipe, addDaysIso(start, index), 1));
       state.weekItems = [];
-      await loadOrCreateShoppingList();
+      try {
+        await loadOrCreateShoppingList();
+      } catch (shoppingError) {
+        shoppingSyncFailed = true;
+        console.error("Shopping list sync after diet change failed:", shoppingError);
+      }
     }
 
     state.selectedDay = 0;
@@ -1113,11 +1164,14 @@ async function applyDietPreference(diet) {
     renderPlanner();
     if (meals.length) selectDay(0);
     const summary = getBudgetSummary();
-    toast(!summary.withinBudget
+    const successMessage = !summary.withinBudget
       ? "Mode diet diterapkan. Menu termurah membutuhkan " + money(summary.total) + " untuk 7 hari."
       : diet === "all"
         ? "Menu mingguan dan daftar belanja diperbarui."
-        : "Mode " + (diet === "vegan" ? "Vegan" : diet === "protein" ? "Tinggi protein" : "Super hemat") + " diterapkan. Total 7 menu " + money(summary.total) + ".");
+        : "Mode " + (diet === "vegan" ? "Vegan" : diet === "protein" ? "Tinggi protein" : "Super hemat") + " diterapkan. Total 7 menu " + money(summary.total) + ".";
+    toast(shoppingSyncFailed
+      ? successMessage + " Daftar belanja belum tersinkron, coba refresh."
+      : successMessage);
   } catch (error) {
     state.diet = previousDiet;
     document.querySelectorAll("[data-diet]").forEach((button) => {
